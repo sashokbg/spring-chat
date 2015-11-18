@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -20,10 +22,17 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 @EnableWebMvc
 @ComponentScan(basePackages="bg.alexander.company.controllers")
 @Configuration
+@EnableAsync
 public class AppConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 		super.addViewControllers(registry);
+	}
+	
+	@Override
+	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+		configurer.setDefaultTimeout(22000);
+		super.configureAsyncSupport(configurer);
 	}
 	
 	@Bean(name="messageSource")

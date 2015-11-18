@@ -4,12 +4,14 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
 @Configuration
+@EnableAsync
 public class SpringApplication implements WebApplicationInitializer{
 
     @Override
@@ -28,9 +30,12 @@ public class SpringApplication implements WebApplicationInitializer{
         dispatcherContext.register(DispatcherConfig.class);
 
         // Register and map the dispatcher servlet
+        DispatcherServlet servlet = new DispatcherServlet(dispatcherContext);
+        
         ServletRegistration.Dynamic dispatcher =
-          container.addServlet("dispatcher", new DispatcherServlet(dispatcherContext));
+          container.addServlet("dispatcher", servlet);
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
+        dispatcher.setAsyncSupported(true);
     }
 }
