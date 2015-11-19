@@ -20,7 +20,7 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 @EnableWebMvc
-@ComponentScan(basePackages="bg.alexander.company.controllers")
+@ComponentScan(basePackages="bg.alexander.company.*")
 @Configuration
 @EnableAsync
 public class AppConfig extends WebMvcConfigurerAdapter {
