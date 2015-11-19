@@ -1,0 +1,38 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Insert title here @</title>
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-1.11.3.js"></script>
+	<script type="text/javascript">
+		function readMessages() {
+			console.log("Starting ajax");
+				$.ajax({
+					url : "read-messages"
+				}).done(function(result) {
+					console.log("Ajax complete");
+					$('#messages').append(result);
+					console.log("Recursive call");
+					readMessages();
+				});
+// 			setTimeout(function() {
+				
+// 			}, 20000);
+		};
+	</script>
+</head>
+<body>
+	<p>You have subscribed to the message queue!</p>
+	<section>
+		<button onclick="readMessages();">Read Messages</button>
+		<div id="container">
+			Messages posted:
+			<div id="messages"></div>
+		</div>
+	</section>
+</body>
+</html>

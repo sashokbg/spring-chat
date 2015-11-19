@@ -31,7 +31,8 @@ public class MessageController {
 	@RequestMapping("/read-messages")
 	public @ResponseBody DeferredResult<String> readMessages() {
 		log.info("Reading messages");
-		DeferredResult<String> deferredResult = new DeferredResult<>();
+		DeferredResult<String> deferredResult = new DeferredResult<>(20000L);
+		deferredResult.onTimeout(()-> deferredResult.setResult("empty"));
 		
 		CompletableFuture
 		.supplyAsync(taskService::execute)
