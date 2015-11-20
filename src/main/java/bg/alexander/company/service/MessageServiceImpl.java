@@ -24,12 +24,30 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Override
 	@Async
-	public void postMessage(String message){
+	public void broadcastMessage(String message){
 		users.entrySet().stream().forEach(
-			u -> { try{ u.getValue().put(message);}
-			catch(Exception e){
-				e.printStackTrace();
-			}});
+			(u) -> { 
+				try{
+					u.getValue().put(message);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			});
+	}
+	
+	@Override
+	@Async
+	public void postMessage(String message, String userId){
+		users.entrySet().stream().filter(u->u.getKey().equals(userId)).forEach(
+			(u) -> { 
+				try{
+					u.getValue().put(message);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			});
 	}
 	
 	@Override

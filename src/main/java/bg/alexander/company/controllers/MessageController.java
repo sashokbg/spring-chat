@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -20,12 +19,21 @@ public class MessageController {
 	@Autowired
 	private MessageService messageService;
 	
+	@RequestMapping("/broadcast-message")
+	public String broadcastMessage(String message){
+		log.info("Broadcasting a message : "+message);
+		messageService.broadcastMessage(message);
+		return "messages-post";
+	}
+	
 	@RequestMapping("/post-message")
-	public @ResponseBody String postMessage(@RequestParam(name="message") String message) {
-		log.info("Posting a message : "+message);
-		messageService.postMessage(message);
+	public String postMessage(
+			String message,
+			String userId) {
+		log.info("Posting a message : "+message+" to ["+userId+"]");
+		messageService.postMessage(message, userId);
 		
-		return "posted "+message;
+		return "messages-post";
 	}
 	
 	@RequestMapping("/subscribe")
@@ -46,7 +54,7 @@ public class MessageController {
 		deferredResult.onTimeout(()-> {
 			log.info("request expired, sending keep alive");
 			deferredResult.setResult("");
-			messageService.postMessage("");
+			messageService.postMessage("", userId);
 			future.cancel(true);
 		});
 		
@@ -58,10 +66,17 @@ public class MessageController {
 	}
 	
 	@RequestMapping("/messages")
-	public String subscribe() {
+	public String messages() {
 		log.info("Messages page");
 		
 		return "messages";
+	}
+	
+	@RequestMapping("/messages-post")
+	public String subscribe() {
+		log.info("Post Messages page");
+		
+		return "messages-post";
 	}
 	
 }
