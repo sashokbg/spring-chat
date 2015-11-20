@@ -1,3 +1,7 @@
 # company-web
-Spring annotation config
-Thymeleaf
+
+- Servlet 3
+- Spring MVC 4
+- Spring annotation config
+- Thymeleaf
+- DeferredResult
