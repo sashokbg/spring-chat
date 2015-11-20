@@ -30,14 +30,23 @@ public class MessageController {
 	
 	@RequestMapping("/read-messages")
 	public @ResponseBody DeferredResult<String> readMessages() {
-		log.info("Reading messages");
-		DeferredResult<String> deferredResult = new DeferredResult<>(20000L);
-		deferredResult.onTimeout(()-> deferredResult.setResult("empty"));
 		
-		CompletableFuture
-		.supplyAsync(taskService::execute)
-		.whenCompleteAsync((result, throwable) -> deferredResult.setResult(result))
-		;
+		CompletableFuture<String> future = CompletableFuture
+		.supplyAsync(taskService::execute);
+		
+		log.info("Reading messages");
+		DeferredResult<String> deferredResult = new DeferredResult<>(10000L);
+		deferredResult.onTimeout(()-> {
+			log.info("request expired, sending keep alive");
+			deferredResult.setResult("");
+			taskService.postMessage("");
+			future.cancel(true);
+		});
+		
+		future.whenCompleteAsync((result, throwable) -> {
+			deferredResult.setResult(result);
+		});
+		
 		
 		return deferredResult;
 	}
