@@ -18,28 +18,29 @@ public class MessageController {
 	private final Logger log = LogManager.getLogger(MessageController.class);
 	
 	@Autowired
-	private MessageService taskService;
+	private MessageService messageService;
 	
 	@RequestMapping("/post-message")
 	public @ResponseBody String postMessage(@RequestParam(name="message") String message) {
 		log.info("Posting a message : "+message);
-		taskService.postMessage(message);
+		messageService.postMessage(message);
 		
 		return "posted "+message;
 	}
 	
-	@RequestMapping("/read-messages")
-	public @ResponseBody DeferredResult<String> readMessages() {
+	@RequestMapping("/subscribe")
+	public @ResponseBody DeferredResult<String> readMessages(String userId) {
+		messageService.subscribe(userId);
 		
 		CompletableFuture<String> future = CompletableFuture
-		.supplyAsync(taskService::execute);
+		.supplyAsync(()->messageService.readMessage(userId));
 		
-		log.info("Reading messages");
+		log.info("Reading messages for user "+userId);
 		DeferredResult<String> deferredResult = new DeferredResult<>(45000L);
 		deferredResult.onTimeout(()-> {
 			log.info("request expired, sending keep alive");
 			deferredResult.setResult("");
-			taskService.postMessage("");
+			messageService.postMessage("");
 			future.cancel(true);
 		});
 		
@@ -47,15 +48,14 @@ public class MessageController {
 			deferredResult.setResult(result);
 		});
 		
-		
 		return deferredResult;
 	}
 	
-	@RequestMapping("/subscribe")
+	@RequestMapping("/messages")
 	public String subscribe() {
-		log.info("Subscribing");
+		log.info("Messages page");
 		
-		return "subscribe";
+		return "messages";
 	}
 	
 }
