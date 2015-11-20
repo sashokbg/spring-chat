@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import bg.alexander.company.service.TaskService;
+import bg.alexander.company.service.MessageService;
 
 @Controller
 public class MessageController {
 	private final Logger log = LogManager.getLogger(MessageController.class);
 	
 	@Autowired
-	private TaskService taskService;
+	private MessageService taskService;
 	
 	@RequestMapping("/post-message")
 	public @ResponseBody String postMessage(@RequestParam(name="message") String message) {
@@ -35,7 +35,7 @@ public class MessageController {
 		.supplyAsync(taskService::execute);
 		
 		log.info("Reading messages");
-		DeferredResult<String> deferredResult = new DeferredResult<>(10000L);
+		DeferredResult<String> deferredResult = new DeferredResult<>(45000L);
 		deferredResult.onTimeout(()-> {
 			log.info("request expired, sending keep alive");
 			deferredResult.setResult("");

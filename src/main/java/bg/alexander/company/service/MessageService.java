@@ -1,6 +1,6 @@
 package bg.alexander.company.service;
 
-public interface TaskService {
+public interface MessageService {
 	public String execute();
 	public void postMessage(String message);
 }

@@ -8,11 +8,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TaskServiceImpl implements TaskService {
-	private final Logger log = LogManager.getLogger(TaskServiceImpl.class);
+public class MessageServiceImpl implements MessageService {
+	private final Logger log = LogManager.getLogger(MessageServiceImpl.class);
 	private ArrayBlockingQueue<String> queue;
 
-	public TaskServiceImpl() {
+	public MessageServiceImpl() {
 		queue = new ArrayBlockingQueue<>(30);
 	}
 	
