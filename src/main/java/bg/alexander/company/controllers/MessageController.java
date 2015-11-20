@@ -29,9 +29,15 @@ public class MessageController {
 	}
 	
 	@RequestMapping("/subscribe")
-	public @ResponseBody DeferredResult<String> readMessages(String userId) {
+	public @ResponseBody String subscribe(String userId){
+		log.info("Subscribing user "+userId);
 		messageService.subscribe(userId);
 		
+		return "OK";
+	}
+	
+	@RequestMapping("/read-messages")
+	public @ResponseBody DeferredResult<String> readMessages(String userId) {
 		CompletableFuture<String> future = CompletableFuture
 		.supplyAsync(()->messageService.readMessage(userId));
 		

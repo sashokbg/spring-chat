@@ -9,20 +9,26 @@
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-1.11.3.js"></script>
 	<script type="text/javascript">
-		function subscribe() {
+		function subscribe(){
+			$.ajax({
+				url : "subscribe",
+				data: {userId:$('#usedId').val()}
+			}).done(function(result) {
+				console.log("Subscription done");
+				$('#messages').append("Susbribed - OK \n");
+			});
+		}
+		function readMessages() {
 			console.log("Starting ajax");
-				$.ajax({
-					url : "subscribe",
-					data: {userId:$('#usedId').val()}
-				}).done(function(result) {
-					console.log("Ajax complete");
-					$('#messages').append(result);
-					console.log("Recursive call - resubscribe");
-					subscribe();
-				});
-// 			setTimeout(function() {
-				
-// 			}, 20000);
+			$.ajax({
+				url : "read-messages",
+				data: {userId:$('#usedId').val()}
+			}).done(function(result) {
+				console.log("Ajax complete");
+				$('#messages').append(result);
+				console.log("Recursive call - read-messages");
+				readMessages();
+			});
 		};
 	</script>
 </head>
@@ -31,7 +37,8 @@
 	<section>
 		User ID
 		<input id="usedId" />
-		<button onclick="subscribe();">Read Messages</button>
+		<button onclick="subscribe();">Subscribe to service</button><br />
+		<button onclick="readMessages();">Read Messages</button>
 		<div id="container">
 			Messages posted:
 			<div id="messages"></div>
