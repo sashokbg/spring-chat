@@ -5,4 +5,5 @@ public interface MessageService {
 	public void postMessage(String message, String userId);
 	public void subscribe(String userId);
 	public void broadcastMessage(String message);
+	public void keepAlive(String userId);
 }

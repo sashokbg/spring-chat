@@ -33,7 +33,19 @@ public class MessageServiceImpl implements MessageService {
 				catch(Exception e){
 					e.printStackTrace();
 				}
-			});
+			}
+		);
+	}
+	
+	@Override
+	@Async
+	public void keepAlive(String userId){
+		log.info("Keeping alive user ["+userId+"]");
+		try {
+			users.get(userId).put("");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
