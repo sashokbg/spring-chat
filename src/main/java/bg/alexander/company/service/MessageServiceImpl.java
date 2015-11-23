@@ -1,7 +1,8 @@
 package bg.alexander.company.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,29 +12,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class MessageServiceImpl implements MessageService {
 	private final Logger log = LogManager.getLogger(MessageServiceImpl.class);
-	private ConcurrentHashMap<String, ArrayBlockingQueue<String>> users;
+	private List<UserConnection> userConnections;
 
 	public MessageServiceImpl() {
-		users = new ConcurrentHashMap<>();
+		userConnections = new ArrayList<>();
 	}
 	
 	@Override
-	public void subscribe(String userId){
-		users.put(userId, new ArrayBlockingQueue<>(30));
+	public void subscribe(String userId, String userName){
+		UserConnection userCon = new UserConnection();
+		userCon.setUserId(userId);
+		userCon.setUserName(userName);
+		
+		userConnections.add(userCon);
 	}
 	
 	@Override
 	@Async
 	public void broadcastMessage(String message){
-		users.entrySet().stream().forEach(
-			(u) -> { 
-				try{
-					u.getValue().put(message);
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-			}
+		userConnections.stream().forEach(
+			(u) -> u.sendMessage(message)
 		);
 	}
 	
@@ -41,32 +39,23 @@ public class MessageServiceImpl implements MessageService {
 	@Async
 	public void keepAlive(String userId){
 		log.info("Keeping alive user ["+userId+"]");
-		try {
-			users.get(userId).put("");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		userConnections.stream().filter((u)-> u.getUserId().equals(userId)).forEach(
+			(u)-> u.sendMessage("")
+		);
 	}
 	
 	@Override
 	@Async
 	public void postMessage(String message, String userId){
-		try {
-			users.get(userId).put(message);
-		} catch (InterruptedException | NullPointerException ne) {
-			ne.printStackTrace();
-		}
+		userConnections.stream().filter((u)-> u.getUserId().equals(userId)).forEach(
+			(u)-> u.sendMessage(message)
+		);
 	}
 	
 	@Override
 	public String readMessage(String userId) {
-		try {
-			String message = users.get(userId).take();
-			log.info("Consuming a message ["+message+"] by user ["+userId+"]");
-			return message;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return null;
+		String message = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get().readMessage();
+		log.info("Consuming a message ["+message+"] by user ["+userId+"]");
+		return message;
 	}
 }

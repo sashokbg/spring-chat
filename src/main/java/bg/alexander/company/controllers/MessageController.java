@@ -2,6 +2,8 @@ package bg.alexander.company.controllers;
 
 import java.util.concurrent.CompletableFuture;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +47,10 @@ public class MessageController {
 	}
 	
 	@RequestMapping("/subscribe")
-	public @ResponseBody String subscribe(String userId){
-		log.info("Subscribing user "+userId);
-		messageService.subscribe(userId);
+	public @ResponseBody String subscribe(String userName, HttpServletRequest request){
+		String sessionId = request.getSession().getId();
+		log.info("Subscribing user "+userName+" with id "+sessionId);
+		messageService.subscribe(sessionId, userName);
 		
 		return "OK";
 	}
