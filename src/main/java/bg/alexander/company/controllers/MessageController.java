@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -23,15 +24,22 @@ public class MessageController {
 	public String broadcastMessage(String message){
 		log.info("Broadcasting a message : "+message);
 		messageService.broadcastMessage(message);
-		return "messages-post";
+		return "redirect:messages-post";
 	}
 	
-	@RequestMapping("/post-message")
+	@RequestMapping(name="post-message", method=RequestMethod.POST)
 	public String postMessage(
 			String message,
 			String userId) {
 		log.info("Posting a message : "+message+" to ["+userId+"]");
 		messageService.postMessage(message, userId);
+		
+		return "redirect:messages-post";
+	}
+	
+	@RequestMapping(name="post-message", method=RequestMethod.GET)
+	public String postMessage() {
+		log.info("Opened message post board");
 		
 		return "messages-post";
 	}

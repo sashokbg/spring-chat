@@ -9,10 +9,14 @@
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-1.11.3.js"></script>
 	<script type="text/javascript">
+		$.ajaxSetup({ cache: false });
+	
 		function subscribe(){
 			$.ajax({
+				cache: false,
 				url : "subscribe",
-				data: {userId:$('#usedId').val()}
+				data: {userId:$('#usedId').val()
+				}
 			}).done(function(result) {
 // 				console.log("Subscription done");
 				$('#messages').append("Susbribed - OK \n");
