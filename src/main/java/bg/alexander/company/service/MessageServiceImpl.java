@@ -39,15 +39,11 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	@Async
 	public void postMessage(String message, String userId){
-		users.entrySet().stream().filter(u->u.getKey().equals(userId)).forEach(
-			(u) -> { 
-				try{
-					u.getValue().put(message);
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-			});
+		try {
+			users.get(userId).put(message);
+		} catch (InterruptedException | NullPointerException ne) {
+			ne.printStackTrace();
+		}
 	}
 	
 	@Override
