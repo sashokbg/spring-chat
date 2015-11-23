@@ -48,15 +48,16 @@ public class MessageController {
 	
 	@RequestMapping("/subscribe")
 	public @ResponseBody String subscribe(String userName, HttpServletRequest request){
-		String sessionId = request.getSession().getId();
-		log.info("Subscribing user "+userName+" with id "+sessionId);
-		messageService.subscribe(sessionId, userName);
+		String userId = request.getSession().getId();
+		log.info("Subscribing user "+userName+" with id "+userId);
+		messageService.subscribe(userId, userName);
 		
 		return "OK";
 	}
 	
 	@RequestMapping("/read-messages")
-	public @ResponseBody DeferredResult<String> readMessages(String userId) {
+	public @ResponseBody DeferredResult<String> readMessages(HttpServletRequest request) {
+		String userId = request.getSession().getId();
 		CompletableFuture<String> future = CompletableFuture
 		.supplyAsync(()->messageService.readMessage(userId));
 		

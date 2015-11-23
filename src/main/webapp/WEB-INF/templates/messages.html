@@ -15,22 +15,18 @@
 			$.ajax({
 				method : "POST",
 				url : "subscribe",
-				data: {userName:$('#usedName').val()
+				data: {userName:$('#userName').val()
 				}
 			}).done(function(result) {
-// 				console.log("Subscription done");
 				$('#messages').append("Susbribed - OK \n");
 			});
 		}
 		function readMessages() {
-// 			console.log("Starting ajax");
 			$.ajax({
 				url : "read-messages",
 				data: {userName:$('#userName').val()}
 			}).done(function(result) {
-// 				console.log("Ajax complete");
-				$('#messages').append(result);
-// 				console.log("Recursive call - read-messages");
+				$('#messages').append('<br />'+result);
 				readMessages();
 			});
 		};

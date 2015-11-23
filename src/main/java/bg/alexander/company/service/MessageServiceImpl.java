@@ -2,7 +2,6 @@ package bg.alexander.company.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,10 +45,9 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Override
 	@Async
-	public void postMessage(String message, String userId){
-		userConnections.stream().filter((u)-> u.getUserId().equals(userId)).forEach(
-			(u)-> u.sendMessage(message)
-		);
+	public void postMessage(String message, String userName){
+		userConnections.stream().filter(
+				(u)-> u.getUserName().equals(userName)).findFirst().get().sendMessage(message);
 	}
 	
 	@Override
