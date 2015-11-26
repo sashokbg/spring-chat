@@ -38,6 +38,23 @@
 				readMessages();
 			});
 		};
+		
+		function sendMessage(){
+			$.ajax({
+				method : "POST",
+				url : "post-message",
+				data: {
+					userName:$('#sendToUser').val(),
+					message:$('#messageTo').val()
+				},
+				statusCode: {
+				    403: function() {
+						$('#messages').append("<br />Disconnected due to inactivity");
+				    }
+				}
+			});
+			
+		};
 	</script>
 </head>
 <body>
@@ -47,10 +64,25 @@
 		<input id="userName" />
 		<button onclick="subscribe();">Subscribe to service</button><br />
 		<button onclick="readMessages();">Read Messages</button>
-		<div id="container">
-			Messages posted:
-			<div id="messages"></div>
-		</div>
 	</section>
+	
+	<section>
+		To user:
+		<input id="sendToUser" name="userId" type="text" /> <br />
+		Message:
+		<input id="messageTo" name="message" type="text" /> <br />
+		<button onclick="sendMessage();">Send Message</button>
+	</section>
+	Or broadcast:
+	<section>
+		Broadcast Message:
+		<input name="message" type ="text" /><br />
+		<input type="submit" />
+	</section>
+	
+	<div id="container">
+		Messages:
+		<div id="messages"></div>
+	</div>
 </body>
 </html>

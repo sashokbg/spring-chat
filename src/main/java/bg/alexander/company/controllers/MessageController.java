@@ -3,7 +3,6 @@ package bg.alexander.company.controllers;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
-import javax.net.ssl.SSLEngineResult.Status;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,11 +32,9 @@ public class MessageController {
 	}
 	
 	@RequestMapping(name="post-message", method=RequestMethod.POST)
-	public String postMessage(
-			String message,
-			String userId) {
-		log.info("Posting a message : "+message+" to ["+userId+"]");
-		messageService.postMessage(message, userId);
+	public String postMessage(String message,String userName) {
+		log.info("Posting a message : "+message+" to ["+userName+"]");
+		messageService.postMessage(message, userName);
 		
 		return "redirect:messages-post";
 	}
