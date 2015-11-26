@@ -5,6 +5,8 @@ import java.util.Locale;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
@@ -23,6 +25,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 @ComponentScan(basePackages="bg.alexander.company.*")
 @Configuration
 @EnableAsync
+@PropertySource("classpath:/config/application.properties")
 public class AppConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {

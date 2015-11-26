@@ -3,7 +3,9 @@ package bg.alexander.company.spring;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
@@ -38,4 +40,10 @@ public class SpringApplication implements WebApplicationInitializer{
         dispatcher.addMapping("/");
         dispatcher.setAsyncSupported(true);
     }
+    
+    @Bean
+	public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
+	    PropertySourcesPlaceholderConfigurer propertyPlaceholder = new PropertySourcesPlaceholderConfigurer();
+	    return propertyPlaceholder;
+	}
 }
