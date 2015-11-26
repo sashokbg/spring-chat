@@ -1,8 +1,11 @@
 package bg.alexander.company.controllers;
 
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
+import javax.net.ssl.SSLEngineResult.Status;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,8 +60,16 @@ public class MessageController {
 	}
 	
 	@RequestMapping("/read-messages")
-	public @ResponseBody DeferredResult<String> readMessages(HttpServletRequest request) {
+	public @ResponseBody DeferredResult<String> readMessages(HttpServletRequest request, HttpServletResponse response) {
 		String userId = request.getSession().getId();
+		if(!messageService.isUserSubscribed(userId)){
+			try {
+				response.sendError(403);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		CompletableFuture<String> future = CompletableFuture
 		.supplyAsync(()->messageService.readMessage(userId));
 		

@@ -14,10 +14,13 @@ public class UserConnection {
 	private String userName;
 	private String userId;
 	private boolean isActive;
+	private int keepAliveRetries; //the number of consecutive times a user can timeout before disc
 	
 	public UserConnection() {
 		//TODO externalize application properties https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
 		messages = new ArrayBlockingQueue<>(30);
+		keepAliveRetries = 3;
+		isActive = true;
 	}
 	
 	/**
@@ -43,10 +46,23 @@ public class UserConnection {
 	public boolean sendMessage(String message){
 		try {
 			this.messages.put(message);
+			keepAliveRetries = 3;
 			return true;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			return false;
+		}
+	}
+	
+	public void keepAlive(){
+		keepAliveRetries--;
+		try {
+			this.messages.put("");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		if(keepAliveRetries < 0){
+			this.setActive(false);
 		}
 	}
 	

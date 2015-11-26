@@ -42,9 +42,12 @@ public class MessageServiceImpl implements MessageService {
 	@Async
 	public void keepAlive(String userId){
 		log.info("Keeping alive user ["+userId+"]");
-		userConnections.stream().filter((u)-> u.getUserId().equals(userId)).forEach(
-			(u)-> u.sendMessage("")
-		);
+		UserConnection userCon = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get();
+		userCon.keepAlive();
+		if(!userCon.isActive()){
+			log.info("User ["+userId+"] timeout. Disconnecting");
+			userConnections.remove(userCon);
+		}
 	}
 	
 	@Override
@@ -59,5 +62,12 @@ public class MessageServiceImpl implements MessageService {
 		String message = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get().readMessage();
 		log.info("Consuming a message ["+message+"] by user ["+userId+"]");
 		return message;
+	}
+
+	@Override
+	public boolean isUserSubscribed(String userId) {
+		if(userConnections.stream().filter((u)-> u.getUserId().equals(userId)).count()<1)
+			return false;
+		return true;
 	}
 }

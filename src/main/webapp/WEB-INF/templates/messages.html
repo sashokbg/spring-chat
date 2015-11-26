@@ -18,15 +18,23 @@
 				data: {userName:$('#userName').val()
 				}
 			}).done(function(result) {
-				$('#messages').append("Susbribed - "+result);
+				$('#messages').append("<br/>Susbribed - "+result);
 			});
 		}
 		function readMessages() {
 			$.ajax({
 				url : "read-messages",
-				data: {userName:$('#userName').val()}
+				data: {
+					userName:$('#userName').val()
+				},
+				statusCode: {
+				    403: function() {
+						$('#messages').append("<br />Disconnected due to inactivity");
+				    }
+				}
 			}).done(function(result) {
-				$('#messages').append('<br />'+result);
+				if(result)
+					$('#messages').append('<br />'+result);
 				readMessages();
 			});
 		};

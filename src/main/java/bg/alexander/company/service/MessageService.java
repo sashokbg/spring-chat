@@ -6,4 +6,5 @@ public interface MessageService {
 	public boolean subscribe(String userId, String userName);
 	public void broadcastMessage(String message);
 	public void keepAlive(String userId);
+	public boolean isUserSubscribed(String userId);
 }
