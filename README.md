@@ -6,3 +6,7 @@
 - Spring annotation config
 - Thymeleaf
 - DeferredResult
+
+TODO
+
+- check if user is already waiting for messages
