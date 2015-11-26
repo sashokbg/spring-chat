@@ -50,9 +50,10 @@ public class MessageController {
 	public @ResponseBody String subscribe(String userName, HttpServletRequest request){
 		String userId = request.getSession().getId();
 		log.info("Subscribing user "+userName+" with id "+userId);
-		messageService.subscribe(userId, userName);
+		boolean result = false;
+		result = messageService.subscribe(userId, userName);
 		
-		return "OK";
+		return result ? "OK" : "NOK";
 	}
 	
 	@RequestMapping("/read-messages")

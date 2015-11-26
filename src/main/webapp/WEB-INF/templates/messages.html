@@ -18,7 +18,7 @@
 				data: {userName:$('#userName').val()
 				}
 			}).done(function(result) {
-				$('#messages').append("Susbribed - OK \n");
+				$('#messages').append("Susbribed - "+result);
 			});
 		}
 		function readMessages() {

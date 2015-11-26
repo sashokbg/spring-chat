@@ -18,12 +18,16 @@ public class MessageServiceImpl implements MessageService {
 	}
 	
 	@Override
-	public void subscribe(String userId, String userName){
+	public boolean subscribe(String userId, String userName){
 		UserConnection userCon = new UserConnection();
 		userCon.setUserId(userId);
 		userCon.setUserName(userName);
+		if(userConnections.stream().filter((u)-> u.getUserName().equals(userName)).count() > 0){
+			return false;
+		}
 		
 		userConnections.add(userCon);
+		return true;
 	}
 	
 	@Override
@@ -47,7 +51,7 @@ public class MessageServiceImpl implements MessageService {
 	@Async
 	public void postMessage(String message, String userName){
 		userConnections.stream().filter(
-				(u)-> u.getUserName().equals(userName)).findFirst().get().sendMessage(message);
+			(u)-> u.getUserName().equals(userName)).findFirst().get().sendMessage(message);
 	}
 	
 	@Override
