@@ -63,7 +63,8 @@ public class UserConnection {
 	public void keepAlive(){
 		keepAliveRetries--;
 		try {
-			this.messages.put(Message.KEEP_ALIVE_MESSAGE);
+			Message keepAliveMessage = new Message("","");
+			this.messages.put(keepAliveMessage);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

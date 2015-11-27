@@ -82,6 +82,7 @@ public class MessageController {
 		deferredResult.onTimeout(()-> {
 			log.info("request expired, sending keep alive");
 			messageService.keepAlive(userId);
+			deferredResult.setResult(null);
 			future.cancel(true);
 		});
 		

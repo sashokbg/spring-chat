@@ -1,7 +1,6 @@
 package bg.alexander.company.model;
 
 public class Message {
-	public static Message KEEP_ALIVE_MESSAGE = new Message();;
 	private String fromUser;
 	private String message;
 	
