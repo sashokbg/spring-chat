@@ -1,10 +1,13 @@
 package bg.alexander.company.service;
 
+import bg.alexander.company.model.Message;
+
 public interface MessageService {
-	public String readMessage(String userId);
-	public void postMessage(String message, String userName);
+	public Message readMessage(String userId);
 	public boolean subscribe(String userId, String userName);
-	public void broadcastMessage(String message);
+	public void broadcastMessage(String userId,String message);
 	public void keepAlive(String userId);
 	public boolean isUserSubscribed(String userId);
+	public void postMessage(String fromUser, String toUser, String message);
+	public String getSubscribedUser(String userId);
 }

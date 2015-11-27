@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import bg.alexander.company.model.Message;
 import bg.alexander.company.service.MessageService;
 
 @Controller
@@ -25,16 +26,22 @@ public class MessageController {
 	private MessageService messageService;
 	
 	@RequestMapping("/broadcast-message")
-	public String broadcastMessage(String message){
+	public String broadcastMessage(String message, HttpServletRequest request){
+		String userId = request.getSession().getId();
+		String fromUser = messageService.getSubscribedUser(userId);
+		
 		log.info("Broadcasting a message : "+message);
-		messageService.broadcastMessage(message);
+		messageService.broadcastMessage(fromUser, message);
 		return "redirect:messages-post";
 	}
 	
 	@RequestMapping(name="post-message", method=RequestMethod.POST)
-	public String postMessage(String message,String userName) {
-		log.info("Posting a message : "+message+" to ["+userName+"]");
-		messageService.postMessage(message, userName);
+	public String postMessage(String message,String toUser, HttpServletRequest request) {
+		String userId = request.getSession().getId();
+		String fromUser = messageService.getSubscribedUser(userId);
+		
+		log.info("Posting a message : "+message+" to ["+toUser+"]");
+		messageService.postMessage(fromUser, toUser, message);
 		
 		return "redirect:messages-post";
 	}
@@ -57,7 +64,7 @@ public class MessageController {
 	}
 	
 	@RequestMapping("/read-messages")
-	public @ResponseBody DeferredResult<String> readMessages(HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody DeferredResult<Message> readMessages(HttpServletRequest request, HttpServletResponse response) {
 		String userId = request.getSession().getId();
 		if(!messageService.isUserSubscribed(userId)){
 			try {
@@ -67,14 +74,13 @@ public class MessageController {
 			}
 		}
 		
-		CompletableFuture<String> future = CompletableFuture
+		CompletableFuture<Message> future = CompletableFuture
 		.supplyAsync(()->messageService.readMessage(userId));
 		
 		log.info("Reading messages for user "+userId);
-		DeferredResult<String> deferredResult = new DeferredResult<>(45000L);
+		DeferredResult<Message> deferredResult = new DeferredResult<>(45000L);
 		deferredResult.onTimeout(()-> {
 			log.info("request expired, sending keep alive");
-			deferredResult.setResult("");
 			messageService.keepAlive(userId);
 			future.cancel(true);
 		});

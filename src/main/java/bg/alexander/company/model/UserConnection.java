@@ -1,4 +1,4 @@
-package bg.alexander.company.service;
+package bg.alexander.company.model;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
  * @author Kirilov
  *
  */
-public class UserConnectionImpl implements UserConnection {
-	private ArrayBlockingQueue<String> messages;
+public class UserConnection {
+	private ArrayBlockingQueue<Message> messages;
 	private String userName;
 	private String userId;
 	private boolean isActive;
@@ -22,7 +22,7 @@ public class UserConnectionImpl implements UserConnection {
 	
 	private int keepAliveRetries; //the number of consecutive times a user can timeout before disc
 	
-	public UserConnectionImpl() {
+	public UserConnection() {
 		//TODO externalize application properties https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
 		messages = new ArrayBlockingQueue<>(30);
 		isActive = true;
@@ -35,14 +35,13 @@ public class UserConnectionImpl implements UserConnection {
 	 * 
 	 * @return the first message of the queue. Waits until one is available
 	 */
-	@Override
-	public String readMessage(){
+	public Message readMessage(){
 		try {
 			return messages.take();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-			return "SERVER ERROR";
 		}
+		return null;
 	}
 	
 	/**
@@ -50,8 +49,7 @@ public class UserConnectionImpl implements UserConnection {
 	 * @param message
 	 * @return
 	 */
-	@Override
-	public boolean sendMessage(String message){
+	public boolean sendMessage(Message message){
 		try {
 			this.messages.put(message);
 			keepAliveRetries = 3;
@@ -62,11 +60,10 @@ public class UserConnectionImpl implements UserConnection {
 		}
 	}
 	
-	@Override
 	public void keepAlive(){
 		keepAliveRetries--;
 		try {
-			this.messages.put("");
+			this.messages.put(Message.KEEP_ALIVE_MESSAGE);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -75,7 +72,7 @@ public class UserConnectionImpl implements UserConnection {
 		}
 	}
 	
-	public ArrayBlockingQueue<String> getMessages() {
+	public ArrayBlockingQueue<Message> getMessages() {
 		return messages;
 	}
 	public String getUserName() {

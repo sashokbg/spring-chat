@@ -33,8 +33,9 @@
 				    }
 				}
 			}).done(function(result) {
-				if(result)
-					$('#messages').append('<br />'+result);
+				if(result){
+					$('#messages').append('<br /><i>'+result.fromUser+'</i>: '+result.message);
+				}
 				readMessages();
 			});
 		};
@@ -44,7 +45,7 @@
 				method : "POST",
 				url : "post-message",
 				data: {
-					userName:$('#sendToUser').val(),
+					toUser:$('#sendToUser').val(),
 					message:$('#messageTo').val()
 				},
 				statusCode: {

@@ -9,10 +9,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import bg.alexander.company.model.Message;
+import bg.alexander.company.model.UserConnection;
+
+/**
+ * 
+ * @author Kirilov
+ *
+ */
 @Service
 public class MessageServiceImpl implements MessageService {
 	private final Logger log = LogManager.getLogger(MessageServiceImpl.class);
-	private List<UserConnectionImpl> userConnections;
+	private List<UserConnection> userConnections;
 
 	@Value("${user.connection.keepalive.retries}")
 	private String test;
@@ -23,7 +31,7 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Override
 	public boolean subscribe(String userId, String userName){
-		UserConnectionImpl userCon = new UserConnectionImpl();
+		UserConnection userCon = new UserConnection();
 		userCon.setUserId(userId);
 		userCon.setUserName(userName);
 		if(userConnections.stream().filter((u)-> u.getUserName().equals(userName)).count() > 0){
@@ -36,9 +44,10 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Override
 	@Async
-	public void broadcastMessage(String message){
+	public void broadcastMessage(String fromUser, String message){
+		Message broadCastMessage = new Message(fromUser,message);
 		userConnections.stream().forEach(
-			(u) -> u.sendMessage(message)
+			(u) -> u.sendMessage(broadCastMessage)
 		);
 	}
 	
@@ -46,7 +55,7 @@ public class MessageServiceImpl implements MessageService {
 	@Async
 	public void keepAlive(String userId){
 		log.info("Keeping alive user ["+userId+"]");
-		UserConnectionImpl userCon = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get();
+		UserConnection userCon = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get();
 		userCon.keepAlive();
 		if(!userCon.isActive()){
 			log.info("User ["+userId+"] timeout. Disconnecting");
@@ -56,14 +65,15 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Override
 	@Async
-	public void postMessage(String message, String userName){
+	public void postMessage(String fromUser, String toUser, String message){
+		Message messageToSend = new Message(fromUser, message);
 		userConnections.stream().filter(
-			(u)-> u.getUserName().equals(userName)).findFirst().get().sendMessage(message);
+			(u)-> u.getUserName().equals(toUser)).findFirst().get().sendMessage(messageToSend);
 	}
 	
 	@Override
-	public String readMessage(String userId) {
-		String message = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get().readMessage();
+	public Message readMessage(String userId) {
+		Message message = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get().readMessage();
 		log.info("Consuming a message ["+message+"] by user ["+userId+"]");
 		return message;
 	}
@@ -73,5 +83,10 @@ public class MessageServiceImpl implements MessageService {
 		if(userConnections.stream().filter((u)-> u.getUserId().equals(userId)).count()<1)
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String getSubscribedUser(String userId) {
+		return userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get().getUserName();
 	}
 }
