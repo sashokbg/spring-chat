@@ -54,6 +54,21 @@
 				    }
 				}
 			});
+		};
+		
+		function broadcast(){
+			$.ajax({
+				method : "POST",
+				url : "broadcast-message",
+				data: {
+					message:$('#messageTo').val()
+				},
+				statusCode: {
+				    403: function() {
+						$('#messages').append("<br />Disconnected due to inactivity");
+				    }
+				}
+			});
 			
 		};
 	</script>
@@ -72,13 +87,8 @@
 		<input id="sendToUser" name="userId" type="text" /> <br />
 		Message:
 		<input id="messageTo" name="message" type="text" /> <br />
-		<button onclick="sendMessage();">Send Message</button>
-	</section>
-	Or broadcast:
-	<section>
-		Broadcast Message:
-		<input name="message" type ="text" /><br />
-		<input type="submit" />
+		<button onclick="sendMessage();">Send Message</button> <br />
+		<button onclick="broadcast()">Broadcast</button>
 	</section>
 	
 	<div id="container">
