@@ -2,6 +2,7 @@ package bg.alexander.company.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -82,6 +83,13 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Override
 	public String getSubscribedUser(String userId) {
-		return userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get().getUserName();
+		String userName;
+		try{
+			userName = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get().getUserName();
+		}catch(NoSuchElementException e){
+			log.error("No user registered for id "+userId);
+			userName = null;
+		}
+		return userName;
 	}
 }

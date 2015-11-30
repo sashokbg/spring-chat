@@ -19,7 +19,17 @@
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-1.11.3.js"></script>
 	<script type="text/javascript">
-		$.ajaxSetup({ cache: false });
+		$.ajaxSetup({
+			cache: false,
+			statusCode: {
+			    403: function() {
+			    	appendSystem("No connection to servers");
+			    },
+				408: function() {
+			    	appendSystem("Disconnected due to innactivity");
+			    }
+			}
+		});
 	
 		$(document).ready(function(){
 			$("#messageTo").keyup(function(event){
@@ -58,11 +68,6 @@
 				url : "read-messages",
 				data: {
 					userName:$('#userName').val()
-				},
-				statusCode: {
-				    403: function() {
-				    	appendSystem("Disconnected due to inactivity");
-				    }
 				}
 			}).done(function(result) {
 				if(result){
@@ -79,11 +84,6 @@
 				data: {
 					toUser:$('#sendToUser').val(),
 					message:$('#messageTo').val()
-				},
-				statusCode: {
-				    403: function() {
-				    	appendSystem("Disconnected due to inactivity");
-				    }
 				}
 			}).done(function(){
 				var fromUser = $('#userName').val();
@@ -100,11 +100,6 @@
 				url : "broadcast-message",
 				data: {
 					message:$('#messageTo').val()
-				},
-				statusCode: {
-				    403: function() {
-				    	appendSystem("Disconnected due to inactivity");
-				    }
 				}
 			});
 			

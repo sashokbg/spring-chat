@@ -38,8 +38,14 @@ public class MessageController {
 	@Autowired
 	private MessageService messageService;
 	
+	@Autowired
+	private HttpServletResponse response;
+	
+	@Autowired
+	private HttpServletRequest request;
+	
 	@RequestMapping(path="broadcast-message", method=RequestMethod.POST)
-	public @ResponseBody String broadcastMessage(String message, HttpServletRequest request){
+	public @ResponseBody String broadcastMessage(String message){
 		String userId = request.getSession().getId();
 		String fromUser = messageService.getSubscribedUser(userId);
 		
@@ -48,26 +54,30 @@ public class MessageController {
 		return "OK";
 	}
 	
+	
 	@RequestMapping(path="post-message", method=RequestMethod.POST)
-	public @ResponseBody String postMessage(String message, String toUser, HttpServletRequest request) {
+	public @ResponseBody String postMessage(String message, String toUser) {
 		String userId = request.getSession().getId();
 		String fromUser = messageService.getSubscribedUser(userId);
 		
-		log.info("Posting a message : "+message+" to ["+toUser+"]");
-		messageService.postMessage(fromUser, toUser, message);
+		if(fromUser!=null){
+			log.info("Posting a message : "+message+" to ["+toUser+"]");
+			messageService.postMessage(fromUser, toUser, message);
+		}
+		else{
+			try {
+				response.sendError(403);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return "KO";
+		}
 		
 		return "OK";
 	}
 	
-	@RequestMapping(name="post-message", method=RequestMethod.GET)
-	public String postMessage() {
-		log.info("Opened message post board");
-		
-		return "messages-post";
-	}
-	
 	@RequestMapping("/subscribe")
-	public @ResponseBody String subscribe(String userName, HttpServletRequest request){
+	public @ResponseBody String subscribe(String userName){
 		String userId = request.getSession().getId();
 		log.info("Subscribing user "+userName+" with id "+userId);
 		boolean result = false;
@@ -80,11 +90,11 @@ public class MessageController {
 	}
 	
 	@RequestMapping("/read-messages")
-	public @ResponseBody DeferredResult<Message> readMessages(HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody DeferredResult<Message> readMessages() {
 		String userId = request.getSession().getId();
 		if(!messageService.isUserSubscribed(userId)){
 			try {
-				response.sendError(403);
+				response.sendError(408);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
