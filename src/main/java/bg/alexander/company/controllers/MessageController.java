@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import bg.alexander.company.model.Message;
+import bg.alexander.company.model.UserConnection;
 import bg.alexander.company.service.MessageService;
 
 /**
@@ -37,25 +38,25 @@ public class MessageController {
 	@Autowired
 	private MessageService messageService;
 	
-	@RequestMapping("/broadcast-message")
-	public String broadcastMessage(String message, HttpServletRequest request){
+	@RequestMapping(path="broadcast-message", method=RequestMethod.POST)
+	public @ResponseBody String broadcastMessage(String message, HttpServletRequest request){
 		String userId = request.getSession().getId();
 		String fromUser = messageService.getSubscribedUser(userId);
 		
-		log.info("Broadcasting a message : "+message);
+		log.info("Broadcasting a message : "+message+" from user ["+fromUser+"]");
 		messageService.broadcastMessage(fromUser, message);
-		return "redirect:messages-post";
+		return "OK";
 	}
 	
-	@RequestMapping(name="post-message", method=RequestMethod.POST)
-	public String postMessage(String message,String toUser, HttpServletRequest request) {
+	@RequestMapping(path="post-message", method=RequestMethod.POST)
+	public @ResponseBody String postMessage(String message, String toUser, HttpServletRequest request) {
 		String userId = request.getSession().getId();
 		String fromUser = messageService.getSubscribedUser(userId);
 		
 		log.info("Posting a message : "+message+" to ["+toUser+"]");
 		messageService.postMessage(fromUser, toUser, message);
 		
-		return "redirect:messages-post";
+		return "OK";
 	}
 	
 	@RequestMapping(name="post-message", method=RequestMethod.GET)
@@ -71,6 +72,9 @@ public class MessageController {
 		log.info("Subscribing user "+userName+" with id "+userId);
 		boolean result = false;
 		result = messageService.subscribe(userId, userName);
+		if(!result){
+			log.error("Subscribing failed");
+		}
 		
 		return result ? "OK" : "NOK";
 	}
@@ -111,12 +115,4 @@ public class MessageController {
 		
 		return "messages";
 	}
-	
-	@RequestMapping("/messages-post")
-	public String subscribe() {
-		log.info("Post Messages page");
-		
-		return "messages-post";
-	}
-	
 }
