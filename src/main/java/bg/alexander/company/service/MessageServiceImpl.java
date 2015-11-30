@@ -49,7 +49,7 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	@Async
 	public void keepAlive(String userId){
-		log.info("Keeping alive user ["+userId+"]");
+		log.debug("Keeping alive user ["+userId+"]");
 		UserConnection userCon = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get();
 		userCon.keepAlive();
 		if(!userCon.isActive()){
@@ -69,7 +69,7 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	public Message readMessage(String userId) {
 		Message message = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get().readMessage();
-		log.info("Consuming a message ["+message+"] by user ["+userId+"]");
+		log.debug("Consuming a message ["+message+"] by user ["+userId+"]");
 		return message;
 	}
 
