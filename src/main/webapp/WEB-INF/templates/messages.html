@@ -19,6 +19,7 @@
 				}
 			}).done(function(result) {
 				$('#messages').append("<br/>Susbribed - "+result);
+				readMessages();
 			});
 		}
 		function readMessages() {
@@ -79,7 +80,7 @@
 		User Name
 		<input id="userName" />
 		<button onclick="subscribe();">Subscribe to service</button><br />
-		<button onclick="readMessages();">Read Messages</button>
+<!-- 		<button onclick="readMessages();">Read Messages</button> -->
 	</section>
 	
 	<section>
