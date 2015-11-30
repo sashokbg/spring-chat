@@ -5,8 +5,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
- * A class representing a user connection betwean the server and the client <br/>
- * Each user tracks it's own message queue
+ * A class representing a user connection between the server and the client </br>
+ * Each user tracks it's own message queue. Uses a blocking queue to make it wait</br>
+ * 
  * 
  * @author Kirilov
  *

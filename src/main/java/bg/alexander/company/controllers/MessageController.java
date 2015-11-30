@@ -18,6 +18,18 @@ import org.springframework.web.context.request.async.DeferredResult;
 import bg.alexander.company.model.Message;
 import bg.alexander.company.service.MessageService;
 
+/**
+ * 
+ * Spring controller assuring the message sending, subscribing and use connection </br >
+ * A user must first subscribe to the service and then invoke readMessages method
+ * 
+ * @see Message
+ * @see UserConnection
+ * @see MessageService
+ * 
+ * @author Kirilov
+ *
+ */
 @Controller
 public class MessageController {
 	private final Logger log = LogManager.getLogger(MessageController.class);

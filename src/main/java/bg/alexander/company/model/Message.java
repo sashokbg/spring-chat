@@ -1,5 +1,12 @@
 package bg.alexander.company.model;
 
+/**
+ * Bean representing a message sent through a user connection 
+ * 
+ * @see UserConnection
+ * @author Kirilov
+ *
+ */
 public class Message {
 	private String fromUser;
 	private String message;

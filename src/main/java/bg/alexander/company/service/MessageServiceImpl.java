@@ -12,11 +12,6 @@ import org.springframework.stereotype.Service;
 import bg.alexander.company.model.Message;
 import bg.alexander.company.model.UserConnection;
 
-/**
- * 
- * @author Kirilov
- *
- */
 @Service
 public class MessageServiceImpl implements MessageService {
 	private final Logger log = LogManager.getLogger(MessageServiceImpl.class);

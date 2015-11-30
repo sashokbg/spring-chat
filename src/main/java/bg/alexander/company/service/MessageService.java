@@ -2,6 +2,11 @@ package bg.alexander.company.service;
 
 import bg.alexander.company.model.Message;
 
+/**
+ * 
+ * @author Kirilov
+ *
+ */
 public interface MessageService {
 	public Message readMessage(String userId);
 	public boolean subscribe(String userId, String userName);
