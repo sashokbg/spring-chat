@@ -8,6 +8,7 @@ package bg.alexander.company.model;
  *
  */
 public class Message {
+	public static Message EMPTY = new Message();
 	private String fromUser;
 	private String message;
 	
