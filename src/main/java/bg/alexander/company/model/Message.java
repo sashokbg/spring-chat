@@ -14,6 +14,7 @@ public class Message {
 	
 	public Message() {
 		message = "";
+		fromUser= "";
 	}
 	
 	public Message(String fromUser, String message) {
