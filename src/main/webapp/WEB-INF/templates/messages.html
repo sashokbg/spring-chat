@@ -5,12 +5,43 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<title>Insert title here @</title>
+<title>Chat Support</title>
+<style type="text/css">
+	#messages{
+		height: 150px;
+		background-color: #F1F1F1;
+		overflow: auto;
+	}
+	.message-system{
+		color: red;
+	}
+</style>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-1.11.3.js"></script>
 	<script type="text/javascript">
 		$.ajaxSetup({ cache: false });
 	
+		$(document).ready(function(){
+			$("#messageTo").keyup(function(event){
+			    if(event.keyCode == 13){
+			        sendMessage();
+			    }
+			});
+		});
+		
+		function append(message){
+			$('#messages').append('<br />'+message);
+			
+			var objDiv = document.getElementById("messages");
+			objDiv.scrollTop = objDiv.scrollHeight;
+		}
+		
+		/*<![CDATA[**/
+		function appendSystem(message){
+			var sysMessage = "<span class=\'message-system\'>"+message+"</span>";
+			append(sysMessage);
+		}
+		/*]]>*/
 		function subscribe(){
 			$.ajax({
 				method : "POST",
@@ -18,7 +49,7 @@
 				data: {userName:$('#userName').val()
 				}
 			}).done(function(result) {
-				$('#messages').append("<br/>Susbribed - "+result);
+				appendSystem("Susbribed - "+result);
 				readMessages();
 			});
 		}
@@ -30,12 +61,12 @@
 				},
 				statusCode: {
 				    403: function() {
-						$('#messages').append("<br />Disconnected due to inactivity");
+				    	appendSystem("Disconnected due to inactivity");
 				    }
 				}
 			}).done(function(result) {
 				if(result){
-					$('#messages').append('<br /><i>'+result.fromUser+'</i>: '+result.message);
+					append('<i>'+result.fromUser+'</i>: '+result.message);
 				}
 				readMessages();
 			});
@@ -51,9 +82,15 @@
 				},
 				statusCode: {
 				    403: function() {
-						$('#messages').append("<br />Disconnected due to inactivity");
+				    	appendSystem("Disconnected due to inactivity");
 				    }
 				}
+			}).done(function(){
+				var fromUser = $('#userName').val();
+				var messageTo = $("#messageTo").val();
+				
+				append('<i>'+fromUser+'</i>: '+messageTo);
+				$("#messageTo").val('');
 			});
 		};
 		
@@ -66,7 +103,7 @@
 				},
 				statusCode: {
 				    403: function() {
-						$('#messages').append("<br />Disconnected due to inactivity");
+				    	appendSystem("Disconnected due to inactivity");
 				    }
 				}
 			});
@@ -75,14 +112,18 @@
 	</script>
 </head>
 <body>
-	<p>You have subscribed to the message queue!</p>
+	<p th:text="#{messages.welcome}">Welcome to chat support</p>
 	<section>
-		User Name
+		User Name:
 		<input id="userName" />
 		<button onclick="subscribe();">Subscribe to service</button><br />
-<!-- 		<button onclick="readMessages();">Read Messages</button> -->
 	</section>
-	
+	<hr />
+	<div id="container">
+		Messages:
+		<div id="messages"></div>
+	</div>
+	<hr />
 	<section>
 		To user:
 		<input id="sendToUser" name="userId" type="text" /> <br />
@@ -91,10 +132,5 @@
 		<button onclick="sendMessage();">Send Message</button> <br />
 		<button onclick="broadcast()">Broadcast</button>
 	</section>
-	
-	<div id="container">
-		Messages:
-		<div id="messages"></div>
-	</div>
 </body>
 </html>
