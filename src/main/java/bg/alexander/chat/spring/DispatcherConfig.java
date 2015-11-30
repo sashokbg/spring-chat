@@ -1,4 +1,4 @@
-package bg.alexander.company.spring;
+package bg.alexander.chat.spring;
 
 import org.springframework.context.annotation.Configuration;
 

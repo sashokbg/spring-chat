@@ -1,4 +1,4 @@
-package bg.alexander.company.spring;
+package bg.alexander.chat.spring;
 
 import java.util.Locale;
 
@@ -21,7 +21,7 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 @EnableWebMvc
-@ComponentScan(basePackages="bg.alexander.company.*")
+@ComponentScan(basePackages="bg.alexander.chat.*")
 @Configuration
 @EnableAsync
 @PropertySource("classpath:/config/application.properties")

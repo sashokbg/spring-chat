@@ -1,4 +1,4 @@
-package bg.alexander.company.spring;
+package bg.alexander.chat.spring;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;

@@ -1,4 +1,4 @@
-package bg.alexander.company.model;
+package bg.alexander.chat.model;
 
 /**
  * Bean representing a message sent through a user connection 

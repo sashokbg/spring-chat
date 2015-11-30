@@ -1,4 +1,4 @@
-package bg.alexander.company.controllers;
+package bg.alexander.chat.controllers;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import bg.alexander.company.model.Message;
-import bg.alexander.company.model.UserConnection;
-import bg.alexander.company.service.MessageService;
+import bg.alexander.chat.model.Message;
+import bg.alexander.chat.model.UserConnection;
+import bg.alexander.chat.service.MessageService;
 
 /**
  * 

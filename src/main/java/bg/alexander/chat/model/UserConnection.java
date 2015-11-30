@@ -1,4 +1,4 @@
-package bg.alexander.company.model;
+package bg.alexander.chat.model;
 
 import java.util.concurrent.ArrayBlockingQueue;
 

@@ -1,4 +1,4 @@
-package bg.alexander.company.service;
+package bg.alexander.chat.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import bg.alexander.company.model.Message;
-import bg.alexander.company.model.UserConnection;
+import bg.alexander.chat.model.Message;
+import bg.alexander.chat.model.UserConnection;
 
 @Service
 public class MessageServiceImpl implements MessageService {

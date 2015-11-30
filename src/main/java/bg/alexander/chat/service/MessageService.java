@@ -1,6 +1,6 @@
-package bg.alexander.company.service;
+package bg.alexander.chat.service;
 
-import bg.alexander.company.model.Message;
+import bg.alexander.chat.model.Message;
 
 /**
  * 
