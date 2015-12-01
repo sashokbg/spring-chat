@@ -1,6 +1,7 @@
 package bg.alexander.chat.service;
 
 import bg.alexander.chat.model.Message;
+import bg.alexander.chat.model.User;
 
 /**
  * 
@@ -9,10 +10,11 @@ import bg.alexander.chat.model.Message;
  */
 public interface MessageService {
 	public Message readMessage(String userId);
-	public boolean subscribe(String userId, String userName);
-	public void broadcastMessage(String userId,String message);
+	public boolean subscribe(User user);
+	public void broadcastMessage(User fromUser,String message);
 	public void keepAlive(String userId);
 	public boolean isUserSubscribed(String userId);
-	public void postMessage(String fromUser, String toUser, String message);
-	public String getSubscribedUser(String userId);
+	void postMessage(User fromUser, User toUser, String message);
+	public User getSubscribedUser(String userId);
+	public User getSubscribedUserByName(String userName);
 }

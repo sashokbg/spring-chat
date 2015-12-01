@@ -67,11 +67,11 @@
 			$.ajax({
 				url : "read-messages",
 				data: {
-					userName:$('#userName').val()
+					user:$('#userName').val()
 				}
 			}).done(function(result) {
 				if(result){
-					append('<i>'+result.fromUser+'</i>: '+result.message);
+					append('<i>'+result.fromUser.userName+'</i>: '+result.message);
 				}
 				readMessages();
 			});

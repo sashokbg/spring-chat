@@ -9,22 +9,22 @@ package bg.alexander.chat.model;
  */
 public class Message {
 	public static Message EMPTY = new Message();
-	private String fromUser;
+	private User fromUser;
 	private String message;
 	
 	public Message() {
 		message = "";
-		fromUser= "";
+		fromUser= new User();
 	}
 	
-	public Message(String fromUser, String message) {
+	public Message(User fromUser, String message) {
 		this.fromUser = fromUser;
 		this.message = message;
 	}
-	public String getFromUser() {
+	public User getFromUser() {
 		return fromUser;
 	}
-	public void setFromUser(String fromUser) {
+	public void setFromUser(User fromUser) {
 		this.fromUser = fromUser;
 	}
 	public String getMessage() {

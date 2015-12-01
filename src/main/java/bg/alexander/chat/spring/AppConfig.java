@@ -7,7 +7,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -20,8 +22,10 @@ import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import bg.alexander.chat.controllers.formatters.UserFormatter;
+
 @EnableWebMvc
-@ComponentScan(basePackages="bg.alexander.chat.*")
+@ComponentScan(basePackages="bg.alexander.*")
 @Configuration
 @EnableAsync
 @PropertySource("classpath:/config/application.properties")
@@ -72,6 +76,23 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 		templateResolver.setCacheable(false);
 		
 		return templateResolver;
+	}
+	
+	@Bean(name="validator")
+	public LocalValidatorFactoryBean getLocalValidatorFactoryBean(){
+		LocalValidatorFactoryBean factory = new LocalValidatorFactoryBean();
+		
+		return factory;
+	}
+	
+	@Bean
+    public UserFormatter getUserFormatter(){
+        return new UserFormatter();
+    }
+	
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+		registry.addFormatter(getUserFormatter());
 	}
 	
 	@Bean(name="templateEngine")

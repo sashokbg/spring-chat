@@ -5,17 +5,20 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import bg.alexander.chat.model.Message;
+import bg.alexander.chat.model.User;
 import bg.alexander.chat.model.UserConnection;
 import bg.alexander.chat.service.MessageService;
 
@@ -47,18 +50,17 @@ public class MessageController {
 	@RequestMapping(path="broadcast-message", method=RequestMethod.POST)
 	public @ResponseBody String broadcastMessage(String message){
 		String userId = request.getSession().getId();
-		String fromUser = messageService.getSubscribedUser(userId);
+		User fromUser = messageService.getSubscribedUser(userId);
 		
 		log.info("Broadcasting a message : "+message+" from user ["+fromUser+"]");
 		messageService.broadcastMessage(fromUser, message);
 		return "OK";
 	}
 	
-	
 	@RequestMapping(path="post-message", method=RequestMethod.POST)
-	public @ResponseBody String postMessage(String message, String toUser) {
+	public @ResponseBody String postMessage(String message, @ModelAttribute("toUser") User toUser) {
 		String userId = request.getSession().getId();
-		String fromUser = messageService.getSubscribedUser(userId);
+		User fromUser = messageService.getSubscribedUser(userId);
 		
 		if(fromUser!=null){
 			log.info("Posting a message : "+message+" to ["+toUser+"]");
@@ -77,11 +79,12 @@ public class MessageController {
 	}
 	
 	@RequestMapping("/subscribe")
-	public @ResponseBody String subscribe(String userName){
+	public @ResponseBody String subscribe(@Valid User user){
 		String userId = request.getSession().getId();
-		log.info("Subscribing user "+userName+" with id "+userId);
+		user.setUserId(userId);
+		log.info("Subscribing user "+user.getUserName()+" with id "+userId);
 		boolean result = false;
-		result = messageService.subscribe(userId, userName);
+		result = messageService.subscribe(user);
 		if(!result){
 			log.error("Subscribing failed");
 		}

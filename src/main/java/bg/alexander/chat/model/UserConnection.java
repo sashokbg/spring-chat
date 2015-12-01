@@ -16,8 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
  */
 public class UserConnection {
 	private ArrayBlockingQueue<Message> messages;
-	private String userName;
-	private String userId;
+	private User user;
 	private boolean isWaiting;
 	private boolean isActive;
 	private final Logger log = LogManager.getLogger(UserConnection.class);
@@ -94,17 +93,11 @@ public class UserConnection {
 	public ArrayBlockingQueue<Message> getMessages() {
 		return messages;
 	}
-	public String getUserName() {
-		return userName;
+	public User getUser() {
+		return user;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String usedId) {
-		this.userId = usedId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 	public boolean isActive() {
 		return isActive;

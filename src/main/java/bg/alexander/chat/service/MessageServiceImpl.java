@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import bg.alexander.chat.model.Message;
+import bg.alexander.chat.model.User;
 import bg.alexander.chat.model.UserConnection;
 
 @Service
@@ -26,21 +27,20 @@ public class MessageServiceImpl implements MessageService {
 	}
 	
 	@Override
-	public boolean subscribe(String userId, String userName){
+	public boolean subscribe(User user){
 		UserConnection userCon = new UserConnection();
-		userCon.setUserId(userId);
-		userCon.setUserName(userName);
-		if(userConnections.stream().filter((u)-> u.getUserName().equals(userName)).count() > 0){
+		if(userConnections.stream().filter((u)-> u.getUser().equals(user)).count() > 0){
 			return false;
 		}
 		
+		userCon.setUser(user);
 		userConnections.add(userCon);
 		return true;
 	}
 	
 	@Override
 	@Async
-	public void broadcastMessage(String fromUser, String message){
+	public void broadcastMessage(User fromUser, String message){
 		Message broadCastMessage = new Message(fromUser,message);
 		userConnections.stream().forEach(
 			(u) -> u.sendMessage(broadCastMessage)
@@ -51,7 +51,7 @@ public class MessageServiceImpl implements MessageService {
 	@Async
 	public void keepAlive(String userId){
 		log.debug("Keeping alive user ["+userId+"]");
-		UserConnection userCon = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get();
+		UserConnection userCon = userConnections.stream().filter((u)-> u.getUser().getUserId().equals(userId)).findFirst().get();
 		userCon.keepAlive();
 		if(!userCon.isActive()){
 			log.info("User ["+userId+"] timeout. Disconnecting");
@@ -61,35 +61,45 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Override
 	@Async
-	public void postMessage(String fromUser, String toUser, String message){
+	public void postMessage(User fromUser, User toUser, String message){
 		Message messageToSend = new Message(fromUser, message);
 		userConnections.stream().filter(
-			(u)-> u.getUserName().equals(toUser)).findFirst().get().sendMessage(messageToSend);
+			(u)-> u.getUser().equals(toUser)).findFirst().get().sendMessage(messageToSend);
 	}
 	
 	@Override
 	public Message readMessage(String userId) {
-		Message message = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get().readMessage();
+		Message message = userConnections.stream().filter((u)-> u.getUser().getUserId().equals(userId)).findFirst().get().readMessage();
 		log.debug("Consuming a message ["+message+"] by user ["+userId+"]");
 		return message;
 	}
 
 	@Override
 	public boolean isUserSubscribed(String userId) {
-		if(userConnections.stream().filter((u)-> u.getUserId().equals(userId)).count()<1)
+		if(userConnections.stream().filter((u)-> u.getUser().getUserId().equals(userId)).count()<1)
 			return false;
 		return true;
 	}
 	
 	@Override
-	public String getSubscribedUser(String userId) {
-		String userName;
+	public User getSubscribedUserByName(String userName) {
+		User user = null;
 		try{
-			userName = userConnections.stream().filter((u)-> u.getUserId().equals(userId)).findFirst().get().getUserName();
+			user = userConnections.stream().filter((u)-> u.getUser().getUserName().equals(userName)).findFirst().get().getUser();
+		}catch(NoSuchElementException e){
+			log.error("No user registered for name ["+userName+"]");
+		}
+		return user;
+	}
+	
+	@Override
+	public User getSubscribedUser(String userId) {
+		User user= null;;
+		try{
+			user = userConnections.stream().filter((u)-> u.getUser().getUserId().equals(userId)).findFirst().get().getUser();
 		}catch(NoSuchElementException e){
 			log.error("No user registered for id "+userId);
-			userName = null;
 		}
-		return userName;
+		return user;
 	}
 }
