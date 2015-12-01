@@ -1,6 +1,7 @@
 package bg.alexander.chat.controllers;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,7 +80,12 @@ public class MessageController {
 		return "OK";
 	}
 	
-	@RequestMapping("/subscribe")
+	@RequestMapping("connected-users")
+	public @ResponseBody List<User> getConnectedUsers(){
+		return messageService.getUserConnections();
+	}
+	
+	@RequestMapping("subscribe")
 	public @ResponseBody String subscribe(@Valid User user, BindingResult bs){
 		if(bs.hasErrors()){
 			return "KO";
@@ -96,7 +102,7 @@ public class MessageController {
 		return result ? "OK" : "KO";
 	}
 	
-	@RequestMapping("/read-messages")
+	@RequestMapping("read-messages")
 	public @ResponseBody DeferredResult<Message> readMessages() {
 		String userId = request.getSession().getId();
 		if(!messageService.isUserSubscribed(userId)){
@@ -126,7 +132,7 @@ public class MessageController {
 		return deferredResult;
 	}
 	
-	@RequestMapping("/messages")
+	@RequestMapping("messages")
 	public String messages() {
 		log.info("Messages page");
 		

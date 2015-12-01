@@ -9,6 +9,15 @@
 <style type="text/css">
 	#messages{
 		height: 150px;
+		width: 450px;
+		background-color: #F1F1F1;
+		overflow: auto;
+		float: left;
+		margin-right: 20px;
+	}
+	#users{
+		height: 150px;
+		width: 150px;
 		background-color: #F1F1F1;
 		overflow: auto;
 	}
@@ -94,6 +103,18 @@
 			});
 		};
 		
+		function getConnectedUsers(){
+			$.ajax({
+				method : "GET",
+				url : "connected-users",
+			}).done(function(result){
+				$('#users').html('Users:');
+				for(var i in result){
+				     $('#users').append('<br />'+result[i].userName);
+				}
+			});
+		}
+		
 		function broadcast(){
 			$.ajax({
 				method : "POST",
@@ -102,7 +123,6 @@
 					message:$('#messageTo').val()
 				}
 			});
-			
 		};
 	</script>
 </head>
@@ -115,8 +135,8 @@
 	</section>
 	<hr />
 	<div id="container">
-		Messages:
-		<div id="messages"></div>
+		<div id="messages">Messages:</div>
+		<div id="users">Users:</div>
 	</div>
 	<hr />
 	<section>
@@ -126,6 +146,7 @@
 		<input id="messageTo" name="message" type="text" /> <br />
 		<button onclick="sendMessage();">Send Message</button> <br />
 		<button onclick="broadcast()">Broadcast</button>
+		<button onclick="getConnectedUsers()">Connected Users</button>
 	</section>
 </body>
 </html>

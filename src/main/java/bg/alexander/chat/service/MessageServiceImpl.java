@@ -3,6 +3,7 @@ package bg.alexander.chat.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -100,8 +101,10 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public List<UserConnection> getUserConnections() {
-		// TODO finish this
-		return null;
+	public List<User> getUserConnections() {
+		List<User> connectedUsers = new ArrayList<>();
+		userConnections.stream().filter((u)->u.isActive()).collect(Collectors.toList()).stream().
+			forEach((e)->connectedUsers.add(e.getUser()));
+		return connectedUsers;
 	}
 }
