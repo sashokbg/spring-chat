@@ -12,7 +12,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy=UserValidator.class)
 public @interface ValidUser {
-	String message() default "{com.mycompany.constraints.checkcase}";
+	String message() default "{user.name.validation.error}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -79,7 +80,10 @@ public class MessageController {
 	}
 	
 	@RequestMapping("/subscribe")
-	public @ResponseBody String subscribe(@Valid User user){
+	public @ResponseBody String subscribe(@Valid User user, BindingResult bs){
+		if(bs.hasErrors()){
+			return "KO";
+		}
 		String userId = request.getSession().getId();
 		user.setUserId(userId);
 		log.info("Subscribing user "+user.getUserName()+" with id "+userId);
@@ -89,7 +93,7 @@ public class MessageController {
 			log.error("Subscribing failed");
 		}
 		
-		return result ? "OK" : "NOK";
+		return result ? "OK" : "KO";
 	}
 	
 	@RequestMapping("/read-messages")
