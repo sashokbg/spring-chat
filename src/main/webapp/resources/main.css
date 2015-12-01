@@ -1,0 +1,17 @@
+#messages{
+	height: 150px;
+	width: 450px;
+	background-color: #F1F1F1;
+	overflow: auto;
+	float: left;
+	margin-right: 20px;
+}
+#users{
+	height: 150px;
+	width: 150px;
+	background-color: #F1F1F1;
+	overflow: auto;
+}
+.message-system{
+	color: red;
+}
