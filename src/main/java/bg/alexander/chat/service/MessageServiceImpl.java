@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +17,6 @@ import bg.alexander.chat.model.UserConnection;
 public class MessageServiceImpl implements MessageService {
 	private final Logger log = LogManager.getLogger(MessageServiceImpl.class);
 	private List<UserConnection> userConnections;
-
-	@Value("${user.connection.keepalive.retries}")
-	private String test;
 	
 	public MessageServiceImpl() {
 		userConnections = new ArrayList<>();
@@ -101,5 +97,11 @@ public class MessageServiceImpl implements MessageService {
 			log.debug("No user registered for id "+userId);
 		}
 		return user;
+	}
+
+	@Override
+	public List<UserConnection> getUserConnections() {
+		// TODO finish this
+		return null;
 	}
 }

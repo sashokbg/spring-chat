@@ -1,7 +1,10 @@
 package bg.alexander.chat.service;
 
+import java.util.List;
+
 import bg.alexander.chat.model.Message;
 import bg.alexander.chat.model.User;
+import bg.alexander.chat.model.UserConnection;
 
 /**
  * 
@@ -17,4 +20,5 @@ public interface MessageService {
 	void postMessage(User fromUser, User toUser, String message);
 	public User getSubscribedUser(String userId);
 	public User getSubscribedUserByName(String userName);
+	List<UserConnection> getUserConnections();
 }
