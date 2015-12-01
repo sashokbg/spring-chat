@@ -34,8 +34,7 @@ public class SpringApplication implements WebApplicationInitializer{
         // Register and map the dispatcher servlet
         DispatcherServlet servlet = new DispatcherServlet(dispatcherContext);
         
-        ServletRegistration.Dynamic dispatcher =
-          container.addServlet("dispatcher", servlet);
+        ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", servlet);
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
         dispatcher.setAsyncSupported(true);
