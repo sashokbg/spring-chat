@@ -87,7 +87,7 @@ public class MessageServiceImpl implements MessageService {
 		try{
 			user = userConnections.stream().filter((u)-> u.getUser().getUserName().equals(userName)).findFirst().get().getUser();
 		}catch(NoSuchElementException e){
-			log.error("No user registered for name ["+userName+"]");
+			log.debug("No user registered for name ["+userName+"]");
 		}
 		return user;
 	}
@@ -98,7 +98,7 @@ public class MessageServiceImpl implements MessageService {
 		try{
 			user = userConnections.stream().filter((u)-> u.getUser().getUserId().equals(userId)).findFirst().get().getUser();
 		}catch(NoSuchElementException e){
-			log.error("No user registered for id "+userId);
+			log.debug("No user registered for id "+userId);
 		}
 		return user;
 	}
