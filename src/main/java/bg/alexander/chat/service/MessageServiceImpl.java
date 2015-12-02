@@ -49,10 +49,12 @@ public class MessageServiceImpl implements MessageService {
 	public void keepAlive(String userId){
 		log.debug("Keeping alive user ["+userId+"]");
 		UserConnection userCon = userConnections.stream().filter((u)-> u.getUser().getUserId().equals(userId)).findFirst().get();
-		userCon.keepAlive();
 		if(!userCon.isActive()){
 			log.info("User ["+userId+"] timeout. Disconnecting");
 			userConnections.remove(userCon);
+		}
+		else{
+			userCon.keepAlive();
 		}
 	}
 	
@@ -66,15 +68,25 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Override
 	public Message readMessage(String userId) {
-		Message message = userConnections.stream().filter((u)-> u.getUser().getUserId().equals(userId)).findFirst().get().readMessage();
+		UserConnection connection = null;
+		connection = userConnections.stream().filter((u)-> u.getUser().getUserId().equals(userId)).findFirst().orElse(null);
+		
+		if(connection == null)
+			return null;
+		
+		Message message = connection.readMessage();
 		log.debug("Consuming a message ["+message+"] by user ["+userId+"]");
 		return message;
 	}
 
 	@Override
 	public boolean isUserSubscribed(String userId) {
-		if(userConnections.stream().filter((u)-> u.getUser().getUserId().equals(userId)).count()<1)
+		if(userConnections.stream().filter((u)-> {
+				return u.getUser().getUserId().equals(userId) && !u.isTimeOuted();
+			}).count()<1){
+			
 			return false;
+		}
 		return true;
 	}
 	

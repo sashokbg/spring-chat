@@ -4,12 +4,16 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 
 /**
+ * <p>
  * A class representing a user connection between the server and the client </br>
- * Each user tracks it's own message queue. Uses a blocking queue to make it wait</br>
+ * Each user tracks it's own message queue. Uses a blocking queue to make it wait
+ * </p>
  * 
+ * <p>
+ * 	{@link Message.EMPTY} represents a keep alive message
+ * </p>
  * 
  * @author Kirilov
  *
@@ -21,9 +25,6 @@ public class UserConnection {
 	private boolean isActive;
 	private final Logger log = LogManager.getLogger(UserConnection.class);
 	
-	@Value("${user.connection.keepalive.retries}")
-	private String test;
-	
 	private int keepAliveRetries; //the number of consecutive times a user can timeout before disc
 	
 	public UserConnection() {
@@ -34,8 +35,13 @@ public class UserConnection {
 	}
 	
 	/**
-	 * This method is called by the client, when he wants to check his messages </br>
-	 * Essentially does messages.take() - blocking queue
+	 * <p>
+	 * 	This method is called by the client, when he wants to check his messages </br>
+	 * 	Essentially does messages.take() - blocking queue
+	 * </p>
+	 * <p>
+	 * 	Reactivates the connection if it has not consumed all of it's timeouts
+	 * </p>
 	 * 
 	 * @return the first message of the queue. Waits until one is available
 	 */
@@ -51,6 +57,10 @@ public class UserConnection {
 		
 		try {
 			isWaiting = true;
+			//reactivate the connection since there is traffic on it
+			if(keepAliveRetries>0){
+				isActive = true;
+			}
 			Message message = messages.take();
 			log.debug("Message taken ["+message+"]");
 			isWaiting = false;
@@ -78,14 +88,20 @@ public class UserConnection {
 		}
 	}
 	
+	/**
+	 * Keep the current connection alive by sending an empty keep alive message <br />
+	 * When keep alive is initiated the connection is set to inactive, until the user actually consumes it
+	 * @see #readMessage(Message)
+	 */
 	public void keepAlive(){
 		keepAliveRetries--;
 		try {
-			this.messages.put(Message.EMPTY);
+			isActive = false; // on each timeout we deactivate
+			messages.put(Message.EMPTY);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		if(keepAliveRetries < 0){
+		if(keepAliveRetries <= 0){
 			this.setActive(false);
 		}
 	}
@@ -102,6 +118,15 @@ public class UserConnection {
 	public boolean isActive() {
 		return isActive;
 	}
+	
+	/**
+	 * Are there any timeout retries left ?
+	 * @return <b>true</b> if keepAliveRetries = 0
+	 */
+	public boolean isTimeOuted() {
+		return keepAliveRetries > 0 ? false : true;
+	}
+	
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
 	}
