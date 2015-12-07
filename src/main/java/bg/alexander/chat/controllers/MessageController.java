@@ -69,11 +69,7 @@ public class MessageController {
 			messageService.postMessage(fromUser, toUser, message);
 		}
 		else{
-			try {
-				response.sendError(403);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			set403();
 			return "KO";
 		}
 		
@@ -82,12 +78,14 @@ public class MessageController {
 	
 	@RequestMapping("connected-users")
 	public @ResponseBody List<User> getConnectedUsers(){
+		log.debug("Getting connected users");
 		return messageService.getUserConnections();
 	}
 	
 	@RequestMapping("subscribe")
 	public @ResponseBody String subscribe(@Valid User user, BindingResult bs){
 		if(bs.hasErrors()){
+			set403();
 			return "KO";
 		}
 		String userId = request.getSession().getId();
@@ -97,11 +95,12 @@ public class MessageController {
 		result = messageService.subscribe(user);
 		if(!result){
 			log.error("Subscribing failed");
+			set403();
 		}
 		
 		return result ? "OK" : "KO";
 	}
-	
+
 	@RequestMapping("read-messages")
 	public @ResponseBody DeferredResult<Message> readMessages() {
 		String userId = request.getSession().getId();
@@ -137,5 +136,13 @@ public class MessageController {
 		log.info("Messages page");
 		
 		return "messages";
+	}
+	
+	private void set403() {
+		try {
+			response.sendError(403);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

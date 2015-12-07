@@ -81,7 +81,7 @@ function getConnectedUsers(){
 	}).done(function(result){
 		$('#users').html('Users:');
 		for(var i in result){
-		     $('#users').append('<br />'+result[i].userName);
+		     $('#users').append('<br /><button id=\"user'+i+'\">'+result[i].userName+'</button>');
 		}
 	});
 }
