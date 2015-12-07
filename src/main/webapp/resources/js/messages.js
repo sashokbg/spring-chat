@@ -19,7 +19,7 @@ $(document).ready(function(){
 });
 
 function append(message){
-	$('#messages').append('<br />'+message);
+	$('.messages .active').append('<br />'+message);
 	
 	var objDiv = document.getElementById("messages");
 	objDiv.scrollTop = objDiv.scrollHeight;
@@ -87,7 +87,8 @@ function getConnectedUsers(){
 	}).done(function(result){
 		$('#users').html('Users:');
 		for(var i in result){
-		     $('#users').append('<br /><button class=\"user-button\" id=\"user'+i+'\" onclick=\"choseUser(this)\">'+result[i].userName+'</button>');
+			$('#users').append('<br /><button class=\"user-button\" id=\"user'+i+'\" onclick=\"choseUser(this)\">'+result[i].userName+'</button>');
+			$('#users').append('<div class="messages">Messages:</div>');
 		}
 	});
 }
