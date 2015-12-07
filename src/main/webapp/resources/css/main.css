@@ -6,6 +6,9 @@
 	float: left;
 	margin-right: 20px;
 }
+button.selected{
+	background-color: red;
+}
 #users{
 	height: 150px;
 	width: 150px;

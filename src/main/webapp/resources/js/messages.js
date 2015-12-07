@@ -74,6 +74,12 @@ function sendMessage(){
 	});
 };
 
+function choseUser(userButton){
+	$('#sendToUser').val($(userButton).text());
+	$('.user-button').removeClass('selected');
+	$(userButton).addClass('selected');
+}
+
 function getConnectedUsers(){
 	$.ajax({
 		method : "GET",
@@ -81,7 +87,7 @@ function getConnectedUsers(){
 	}).done(function(result){
 		$('#users').html('Users:');
 		for(var i in result){
-		     $('#users').append('<br /><button id=\"user'+i+'\">'+result[i].userName+'</button>');
+		     $('#users').append('<br /><button class=\"user-button\" id=\"user'+i+'\" onclick=\"choseUser(this)\">'+result[i].userName+'</button>');
 		}
 	});
 }

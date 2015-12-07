@@ -86,6 +86,7 @@ public class MessageController {
 	public @ResponseBody String subscribe(@Valid User user, BindingResult bs){
 		if(bs.hasErrors()){
 			set403();
+			log.error("Subscribing failed - Cannot convert user name");
 			return "KO";
 		}
 		String userId = request.getSession().getId();
@@ -94,7 +95,7 @@ public class MessageController {
 		boolean result = false;
 		result = messageService.subscribe(user);
 		if(!result){
-			log.error("Subscribing failed");
+			log.error("Subscribing failed - User exists");
 			set403();
 		}
 		
