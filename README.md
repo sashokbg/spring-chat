@@ -9,4 +9,4 @@
 
 TODO
 
-- check if user is already waiting for messages
+- Fix last keepalive "no such element exception"

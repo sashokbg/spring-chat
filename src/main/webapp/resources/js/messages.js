@@ -18,11 +18,16 @@ $(document).ready(function(){
 	});
 });
 
-function append(message){
-	$('.messages .active').append('<br />'+message);
-	
-	var objDiv = document.getElementById("messages");
-	objDiv.scrollTop = objDiv.scrollHeight;
+function append(message, userId){
+	console.log(message);
+	if(userId){
+		$('.messages#'+userId).append('<br />'+message);
+	}
+	else{
+		$('.messages.active').append('<br />'+message);
+	}
+	var scrollHeight = $('.messages.active').unwrap().scrollHeight;
+	$('.messages.active').scrollTop(scrollHeight);
 }
 
 /*<![CDATA[**/
@@ -35,8 +40,7 @@ function subscribe(){
 	$.ajax({
 		method : "POST",
 		url : "subscribe",
-		data: {userName:$('#userName').val()
-		}
+		data: {userName:$('#userName').val()}
 	}).done(function(result) {
 		appendSystem("Susbribed - "+result);
 		readMessages();
@@ -51,7 +55,7 @@ function readMessages() {
 		}
 	}).done(function(result) {
 		if(result){
-			append('<i>'+result.fromUser.userName+'</i>: '+result.message);
+			append('<i>'+result.fromUser.userName+'</i>: '+result.message,result.fromUser.userId);
 		}
 		readMessages();
 	});
@@ -78,6 +82,9 @@ function choseUser(userButton){
 	$('#sendToUser').val($(userButton).text());
 	$('.user-button').removeClass('selected');
 	$(userButton).addClass('selected');
+	$('.messages').removeClass('active');
+	var id = $(userButton).attr('id');
+	$('#'+id).addClass('active');
 }
 
 function getConnectedUsers(){
@@ -87,8 +94,10 @@ function getConnectedUsers(){
 	}).done(function(result){
 		$('#users').html('Users:');
 		for(var i in result){
-			$('#users').append('<br /><button class=\"user-button\" id=\"user'+i+'\" onclick=\"choseUser(this)\">'+result[i].userName+'</button>');
-			$('#users').append('<div class="messages">Messages:</div>');
+			var userName = result[i].userName;
+			var userId = result[i].userId;
+			$('#users').append('<br /><button class=\"user-button\" id=\"'+userId+'\" onclick=\"choseUser(this)\">'+userName+'</button>');
+			$('#container').prepend('<div class="messages" id=\"'+userId+'\">Messages:</div>');
 		}
 	});
 }
