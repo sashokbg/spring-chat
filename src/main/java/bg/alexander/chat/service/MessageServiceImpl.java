@@ -72,7 +72,7 @@ public class MessageServiceImpl implements MessageService {
 					userConnections.remove(userCon);
 				}
 				else{
-					log.debug("Keep alive was consumed, keeping user connection");
+					log.debug("Keep alive was consumed");
 				}
 			});
 		t.start();

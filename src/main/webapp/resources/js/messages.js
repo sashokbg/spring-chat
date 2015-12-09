@@ -26,8 +26,8 @@ function append(message, userId){
 	else{
 		$('.messages.active').append('<br />'+message);
 	}
-	var messagesDiv = $('.messages.active');
-	$('.messages.active').scrollTop(messagesDiv.prop("scrollHeight"));
+	var messagesDiv = $('.active');
+	$('.message.active').scrollTop(messagesDiv.prop("scrollHeight"));
 }
 
 /*<![CDATA[**/
@@ -55,6 +55,7 @@ function readMessages() {
 			user:$('#userName').val()
 		}
 	}).done(function(result) {
+		console.log(result);
 		if(result){
 			append('<i>'+result.fromUser.userName+'</i>: '+result.message,result.fromUser.userId);
 		}
@@ -84,6 +85,7 @@ function choseUser(userButton){
 	$('.user-button').removeClass('selected');
 	$(userButton).addClass('selected');
 	$('.messages').removeClass('active');
+	$('.system-messages').removeClass('active');
 	var id = $(userButton).attr('id');
 	$('#'+id).addClass('active');
 }
@@ -94,11 +96,13 @@ function getConnectedUsers(){
 		url : "connected-users",
 	}).done(function(result){
 		$('#users').html('Users:');
+		$('.user-messages').remove();
+		$('.system-messages').addClass('active');
 		for(var i in result){
 			var userName = result[i].userName;
 			var userId = result[i].userId;
 			$('#users').append('<br /><button class=\"user-button\" id=\"'+userId+'\" onclick=\"choseUser(this)\">'+userName+'</button>');
-			$('#container').prepend('<div class="messages" id=\"'+userId+'\">Messages:</div>');
+			$('#container').prepend('<div class="messages user-messages" id=\"'+userId+'\">Messages:</div>');
 		}
 	});
 }
