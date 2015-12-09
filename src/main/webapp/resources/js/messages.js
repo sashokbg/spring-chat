@@ -44,6 +44,7 @@ function subscribe(){
 	}).done(function(result) {
 		appendSystem("Susbribed - "+result);
 		readMessages();
+		getConnectedUsers();
 	});
 }
 function readMessages() {
