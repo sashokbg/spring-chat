@@ -57,7 +57,7 @@ function readMessages() {
 	}).done(function(result) {
 		console.log(result);
 		if(result){
-			append('<i>'+result.fromUser.userName+'</i>: '+result.message,result.fromUser.userId);
+			append('<i>['+result.timeStamp+']</i>: '+'<i>'+result.fromUser.userName+'</i>: '+result.message,result.fromUser.userId);
 		}
 		readMessages();
 	});
@@ -74,8 +74,9 @@ function sendMessage(){
 	}).done(function(){
 		var fromUser = $('#userName').val();
 		var messageTo = $("#messageTo").val();
-		
-		append('<i>'+fromUser+'</i>: '+messageTo);
+		var currentdate = new Date(); 
+		var currentTimeStr= currentdate.getHours() + ":"+ currentdate.getMinutes() + ":"+ currentdate.getSeconds();
+		append('<i>['+currentTimeStr+']'+fromUser+'</i>: '+messageTo);
 		$("#messageTo").val('');
 	});
 };

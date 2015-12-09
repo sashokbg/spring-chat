@@ -60,7 +60,7 @@ public class MessageController {
 	}
 	
 	@RequestMapping(path="post-message", method=RequestMethod.POST)
-	public @ResponseBody String postMessage(String message, @ModelAttribute("toUser") User toUser) {
+	public @ResponseBody String sendMessage(String message, @ModelAttribute("toUser") User toUser) {
 		String userId = request.getSession().getId();
 		User fromUser = messageService.getSubscribedUser(userId);
 		
