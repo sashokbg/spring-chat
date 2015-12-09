@@ -117,7 +117,7 @@ public class MessageController {
 		.supplyAsync(()->messageService.readMessage(userId));
 		
 		log.info("Reading messages for user "+userId);
-		DeferredResult<Message> deferredResult = new DeferredResult<>(45000L);
+		DeferredResult<Message> deferredResult = new DeferredResult<>(7000L);
 		deferredResult.onTimeout(()-> {
 			log.info("request expired, sending keep alive");
 			messageService.keepAlive(userId);

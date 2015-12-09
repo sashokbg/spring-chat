@@ -56,6 +56,26 @@ public class MessageServiceImpl implements MessageService {
 		else{
 			userCon.keepAlive();
 		}
+		//Wait some time and if user is still inactive, it means that the next keep alive was not consumed - closed browser
+		Thread t = new Thread(
+			()-> {
+				log.debug("Running keep alive timeout wait");
+				try {
+					Thread.sleep(5000);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				//if the connection is timed out, it should be closed elsewhere
+				if(!userCon.isActive() && !userCon.isTimeOuted()){
+					log.debug("Disconnecting "+userCon+". Keep alive not consumed withing time period");
+					userConnections.remove(userCon);
+				}
+				else{
+					log.debug("Keep alive was consumed, keeping user connection");
+				}
+			});
+		t.start();
 	}
 	
 	@Override
