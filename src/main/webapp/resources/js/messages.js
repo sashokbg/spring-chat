@@ -26,8 +26,8 @@ function append(message, userId){
 	else{
 		$('.messages.active').append('<br />'+message);
 	}
-	//var scrollHeight = $('.messages.active').unwrap().scrollHeight;
-	//$('.messages.active').scrollTop(scrollHeight);
+	var messagesDiv = $('.messages.active');
+	$('.messages.active').scrollTop(messagesDiv.prop("scrollHeight"));
 }
 
 /*<![CDATA[**/
