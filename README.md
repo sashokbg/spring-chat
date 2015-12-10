@@ -1,11 +1,29 @@
 # company-web
 
 - Java 8
+	- Functional programming
+	- Stream API
+	- Joda Time
+	- ArrayBlockingQueue
+	- CompletableFuture
+	- ForkJoinPool
 - Servlet 3
+	- Async Enabled
+	- No web.xml
+	- Annotation Config
 - Spring MVC 4
-- Spring annotation config
+	- Annotation Config
+	- Async support
+	- Validation
+	- Formatting
+	- locale resolver
+	- message source
+	- ressource handler
+	- DeferredResult
 - Thymeleaf
-- DeferredResult
+	- i18n
+	- templates
+
 
 TODO
 

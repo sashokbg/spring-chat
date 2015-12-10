@@ -67,6 +67,7 @@ public class MessageServiceImpl implements MessageService {
 				}
 				
 				//if the connection is timed out, it should be closed elsewhere
+				log.debug(userCon);
 				if(!userCon.isActive() && !userCon.isTimeOuted()){
 					log.debug("Disconnecting "+userCon+". Keep alive not consumed withing time period");
 					userConnections.remove(userCon);

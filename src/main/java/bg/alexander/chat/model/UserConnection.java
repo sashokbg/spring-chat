@@ -138,4 +138,53 @@ public class UserConnection {
 	public void setWaiting(boolean isWaiting) {
 		this.isWaiting = isWaiting;
 	}
+
+	@Override
+	public String toString(){
+		return "User connection {\n"
+				+ "user: "+user.getUserName()+"\n"
+				+ "isActive: "+isActive+"\n"
+				+ "isTimeOut: "+isTimeOuted()+"\n"
+				+ "isWaiting: "+isWaiting+"}";
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (isActive ? 1231 : 1237);
+		result = prime * result + (isWaiting ? 1231 : 1237);
+		result = prime * result + keepAliveRetries;
+		result = prime * result + ((messages == null) ? 0 : messages.hashCode());
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserConnection other = (UserConnection) obj;
+		if (isActive != other.isActive)
+			return false;
+		if (isWaiting != other.isWaiting)
+			return false;
+		if (keepAliveRetries != other.keepAliveRetries)
+			return false;
+		if (messages == null) {
+			if (other.messages != null)
+				return false;
+		} else if (!messages.equals(other.messages))
+			return false;
+		if (user == null) {
+			if (other.user != null)
+				return false;
+		} else if (!user.equals(other.user))
+			return false;
+		return true;
+	}
 }
