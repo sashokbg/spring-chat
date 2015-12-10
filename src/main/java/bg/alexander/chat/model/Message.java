@@ -15,6 +15,7 @@ import bg.alexander.chat.controllers.formatters.JsonDateSerializer;
  */
 public class Message {
 	public static Message EMPTY = new Message();
+	public static Message CLOSE = new Message("CONNECTION CLOSE");;
 	private User fromUser;
 	private String message;
 	@JsonSerialize(using=JsonDateSerializer.class)
@@ -26,11 +27,17 @@ public class Message {
 		timeStamp = LocalTime.now();
 	}
 	
+	public Message(String message) {
+		timeStamp = LocalTime.now();
+		this.message = message;
+	}
+	
 	public Message(User fromUser, String message) {
 		timeStamp = LocalTime.now();
 		this.fromUser = fromUser;
 		this.message = message;
 	}
+	
 	public User getFromUser() {
 		return fromUser;
 	}
