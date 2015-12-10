@@ -141,11 +141,12 @@ public class UserConnection {
 
 	@Override
 	public String toString(){
-		return "User connection {\n"
-				+ "user: "+user.getUserName()+"\n"
-				+ "isActive: "+isActive+"\n"
-				+ "isTimeOut: "+isTimeOuted()+"\n"
-				+ "isWaiting: "+isWaiting+"}";
+		return "User connection \n{\n"
+				+ "\tuser: "+user.getUserName()+"\n"
+				+ "\tisActive: "+isActive+"\n"
+				+ "\tisTimeOut: "+isTimeOuted()+"\n"
+				+ "\tisWaiting: "+isWaiting+"\n"
+				+ "\tkeepAliveRetries: "+keepAliveRetries+"\n}";
 	}
 	
 	@Override

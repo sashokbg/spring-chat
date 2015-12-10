@@ -51,32 +51,34 @@ public class MessageServiceImpl implements MessageService {
 		UserConnection userCon = userConnections.stream().filter((u)-> u.getUser().getUserId().equals(userId)).findFirst().get();
 		if(!userCon.isActive()){
 			log.info("User ["+userId+"] timeout. Disconnecting");
+			//send one last close message in order to end last reading thread
+			userCon.sendMessage(Message.CLOSE);
 			userConnections.remove(userCon);
 		}
 		else{
 			userCon.keepAlive();
+			//Wait some time and if user is still inactive, it means that the next keep alive was not consumed - closed browser
+			Thread t = new Thread(
+				()-> {
+					log.debug("Running keep alive timeout wait");
+					try {
+						Thread.sleep(5000);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+					//if the connection is timed out, it should be closed elsewhere
+					log.debug(userCon);
+					if(!userCon.isActive() && !userCon.isTimeOuted()){
+						log.debug("Disconnecting "+userCon+". Keep alive not consumed withing time period");
+						userConnections.remove(userCon);
+					}
+					else{
+						log.debug("Keep alive was consumed");
+					}
+				});
+			t.start();
 		}
-		//Wait some time and if user is still inactive, it means that the next keep alive was not consumed - closed browser
-		Thread t = new Thread(
-			()-> {
-				log.debug("Running keep alive timeout wait");
-				try {
-					Thread.sleep(5000);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-				//if the connection is timed out, it should be closed elsewhere
-				log.debug(userCon);
-				if(!userCon.isActive() && !userCon.isTimeOuted()){
-					log.debug("Disconnecting "+userCon+". Keep alive not consumed withing time period");
-					userConnections.remove(userCon);
-				}
-				else{
-					log.debug("Keep alive was consumed");
-				}
-			});
-		t.start();
 	}
 	
 	@Override

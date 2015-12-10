@@ -2,7 +2,6 @@ package bg.alexander.chat.controllers;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -105,6 +104,8 @@ public class MessageController {
 	@RequestMapping("read-messages")
 	public @ResponseBody DeferredResult<Message> readMessages() {
 		String userId = request.getSession().getId();
+		DeferredResult<Message> deferredResult = new DeferredResult<>(10000L);
+		
 		if(!messageService.isUserSubscribed(userId)){
 			try {
 				response.sendError(408);
@@ -113,21 +114,18 @@ public class MessageController {
 			}
 		}
 		
-		CompletableFuture<Message> future = CompletableFuture
-		.supplyAsync(()->messageService.readMessage(userId));
-		
 		log.info("Reading messages for user "+userId);
-		DeferredResult<Message> deferredResult = new DeferredResult<>(10000L);
+		
 		deferredResult.onTimeout(()-> {
 			log.info("request expired, sending keep alive");
 			messageService.keepAlive(userId);
 			deferredResult.setResult(null);
-			future.cancel(true);
 		});
 		
-		future.whenCompleteAsync((result, throwable) -> {
-			deferredResult.setResult(result);
-		});
+		Thread messageWaitingThread = new Thread(
+				()->deferredResult.setResult(messageService.readMessage(userId))
+				);
+		messageWaitingThread.start();
 		
 		return deferredResult;
 	}
