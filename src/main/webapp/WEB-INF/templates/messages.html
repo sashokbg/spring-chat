@@ -17,8 +17,14 @@
 		</section>
 		<hr />
 		<div id="container">
-			<div class="messages system-messages active">Messages:</div>
-			<div id="users">Users:</div>
+			<div class="panel messages system-messages active" id="system">Messages:</div>
+			<div class="panel users">
+				<div id="system-user">
+					Users:<br />
+					<button class="user-button selected" id="system" onclick="choseUser(this)">System</button>
+				</div>
+				<div id="connected-users"></div>
+			</div>
 		</div>
 		<hr />
 		<section>

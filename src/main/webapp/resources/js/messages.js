@@ -19,13 +19,13 @@ $(document).ready(function(){
 });
 
 function append(message, userId){
-	console.log(message);
+//	console.log(message);
 	var conversation;
 	if(userId){
 		conversation = $('.messages#'+userId);
 	}
 	else{
-		conversation = $('.messages.system-messages');
+		conversation = $('.messages.active');
 	}
 	
 	conversation.append('<br />'+message);
@@ -63,7 +63,7 @@ function readMessages() {
 			user:$('#userName').val()
 		}
 	}).done(function(result) {
-		console.log(result);
+//		console.log(result);
 		//TODO bug null message printed
 		if(result){
 			if(result.message == "USR_LOG"){
@@ -108,8 +108,8 @@ function choseUser(userButton){
 function addConnectedUser(user){
 	var userName = user.userName;
 	var userId = user.userId;
-	$('#users').append('<br /><button class=\"user-button\" id=\"'+userId+'\" onclick=\"choseUser(this)\">'+userName+'</button>');
-	$('#container').prepend('<div class="messages user-messages" id=\"'+userId+'\">Messages:</div>');
+	$('#connected-users').append('<br /><button class=\"user-button\" id=\"'+userId+'\" onclick=\"choseUser(this)\">'+userName+'</button>');
+	$('#container').prepend('<div class="messages panel user-messages" id=\"'+userId+'\">Messages:</div>');
 }
 
 function getConnectedUsers(){
@@ -117,7 +117,7 @@ function getConnectedUsers(){
 		method : "GET",
 		url : "connected-users",
 	}).done(function(result){
-		$('#users').html('Users:');
+		$('#connected-users').html('');
 		$('.user-messages').remove();
 		$('.system-messages').addClass('active');
 		for(var i in result){
