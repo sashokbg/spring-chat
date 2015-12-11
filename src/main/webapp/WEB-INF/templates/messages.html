@@ -1,36 +1,34 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
-
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<title>Chat Support</title>
-<link rel="stylesheet" type="text/css" href="../../resources/css/main.css" th:href="@{/resources/css/main.css}" />
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.js"></script>
-<script type="text/javascript" src="../../resources/js/messages.js" th:src="@{/resources/js/messages.js}"></script>
-</head>
-<body>
-	<p th:text="#{messages.welcome}">Welcome to chat support</p>
-	<section>
-		User Name:
-		<input id="userName" />
-		<button onclick="subscribe();">Subscribe to service</button><br />
-	</section>
-	<hr />
-	<div id="container">
-		<div class="messages system-messages active">Messages:</div>
-		<div id="users">Users:</div>
-	</div>
-	<hr />
-	<section>
-		To user:
-		<input id="sendToUser" name="userId" type="hidden" /> <br />
-		Message:
-		<input id="messageTo" name="message" type="text" /> <br />
-		<button onclick="sendMessage();">Send Message</button> <br />
-		<button onclick="broadcast()">Broadcast</button>
-		<button onclick="getConnectedUsers()">Connected Users</button>
-	</section>
-</body>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+		<title>Chat Support</title>
+		<link rel="stylesheet" type="text/css" href="../../resources/css/main.css" th:href="@{/resources/css/main.css}" />
+		<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.js"></script>
+		<script type="text/javascript" src="../../resources/js/messages.js" th:src="@{/resources/js/messages.js}"></script>
+	</head>
+	<body>
+		<p th:text="#{messages.welcome}">Welcome to chat support</p>
+		<section>
+			User Name:
+			<input id="userName" />
+			<button onclick="subscribe();">Subscribe to service</button><br />
+		</section>
+		<hr />
+		<div id="container">
+			<div class="messages system-messages active">Messages:</div>
+			<div id="users">Users:</div>
+		</div>
+		<hr />
+		<section>
+			To user:
+			<input id="sendToUser" name="userId" type="hidden" /> <br />
+			Message:
+			<input id="messageTo" name="message" type="text" /> <br />
+			<button onclick="sendMessage();">Send Message</button> <br />
+			<button onclick="broadcast()">Broadcast</button>
+			<button onclick="getConnectedUsers()">Connected Users</button>
+		</section>
+	</body>
 </html>

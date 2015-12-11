@@ -19,7 +19,7 @@ $(document).ready(function(){
 });
 
 function append(message, userId){
-	console.log(message);
+//	console.log(message);
 	if(userId){
 		$('.messages#'+userId).append('<br />'+message);
 	}
@@ -55,7 +55,7 @@ function readMessages() {
 			user:$('#userName').val()
 		}
 	}).done(function(result) {
-		console.log(result);
+//		console.log(result);
 		if(result){
 			append('<i>['+result.timeStamp+']</i>: '+'<i>'+result.fromUser.userName+'</i>: '+result.message,result.fromUser.userId);
 		}
