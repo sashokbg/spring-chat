@@ -56,8 +56,9 @@ function readMessages() {
 		}
 	}).done(function(result) {
 //		console.log(result);
+		//TODO bug null message printed
 		if(result){
-			append('<i>['+result.timeStamp+']</i>: '+'<i>'+result.fromUser.userName+'</i>: '+result.message,result.fromUser.userId);
+			append('<i>['+result.timeStamp+']: '+result.fromUser.userName+'</i>: '+result.message,result.fromUser.userId);
 		}
 		readMessages();
 	});
@@ -74,9 +75,8 @@ function sendMessage(){
 	}).done(function(){
 		var fromUser = $('#userName').val();
 		var messageTo = $("#messageTo").val();
-		var currentdate = new Date(); 
-		var currentTimeStr= currentdate.getHours() + ":"+ currentdate.getMinutes() + ":"+ currentdate.getSeconds();
-		append('<i>['+currentTimeStr+']'+fromUser+'</i>: '+messageTo);
+		var d = new Date();
+		append('<i>['+d.toLocaleTimeString()+']: '+fromUser+'</i>: '+messageTo);
 		$("#messageTo").val('');
 	});
 };
