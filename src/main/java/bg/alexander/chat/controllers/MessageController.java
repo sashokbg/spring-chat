@@ -2,6 +2,8 @@ package bg.alexander.chat.controllers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,6 +49,12 @@ public class MessageController {
 	
 	@Autowired
 	private HttpServletRequest request;
+	
+	private ThreadPoolExecutor executor;
+	
+	public MessageController() {
+		executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+	}
 	
 	@RequestMapping(path="broadcast-message", method=RequestMethod.POST)
 	public @ResponseBody String broadcastMessage(String message){
@@ -105,7 +113,6 @@ public class MessageController {
 	public @ResponseBody DeferredResult<Message> readMessages() {
 		String userId = request.getSession().getId();
 		DeferredResult<Message> deferredResult = new DeferredResult<>(10000L);
-		
 		if(!messageService.isUserSubscribed(userId)){
 			try {
 				response.sendError(408);
@@ -122,10 +129,12 @@ public class MessageController {
 			deferredResult.setResult(null);
 		});
 		
-		Thread messageWaitingThread = new Thread(
-				()->deferredResult.setResult(messageService.readMessage(userId))
-				);
-		messageWaitingThread.start();
+		executor.execute(()->
+		{
+			log.trace("** --> Starting message reading thread");
+			log.trace("** deferredResult.set "+deferredResult.setResult(messageService.readMessage(userId)));
+			log.trace("** <-- Exiting message reading thread");
+		});
 		
 		return deferredResult;
 	}
@@ -133,7 +142,6 @@ public class MessageController {
 	@RequestMapping("messages")
 	public String messages() {
 		log.info("Messages page");
-		
 		return "messages";
 	}
 	

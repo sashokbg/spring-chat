@@ -3,6 +3,8 @@ package bg.alexander.chat.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,10 +19,12 @@ import bg.alexander.chat.model.UserConnection;
 @Service
 public class MessageServiceImpl implements MessageService {
 	private final Logger log = LogManager.getLogger(MessageServiceImpl.class);
-	private List<UserConnection> userConnections;
+	private volatile List<UserConnection> userConnections;
+	private ThreadPoolExecutor executor;
 	
 	public MessageServiceImpl() {
 		userConnections = new ArrayList<>();
+		executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 	}
 	
 	@Override
@@ -58,26 +62,24 @@ public class MessageServiceImpl implements MessageService {
 		else{
 			userCon.keepAlive();
 			//Wait some time and if user is still inactive, it means that the next keep alive was not consumed - closed browser
-			Thread t = new Thread(
-				()-> {
-					log.debug("Running keep alive timeout wait");
-					try {
-						Thread.sleep(5000);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					
-					//if the connection is timed out, it should be closed elsewhere
-					log.debug(userCon);
-					if(!userCon.isActive() && !userCon.isTimeOuted()){
-						log.debug("Disconnecting "+userCon+". Keep alive not consumed withing time period");
-						userConnections.remove(userCon);
-					}
-					else{
-						log.debug("Keep alive was consumed");
-					}
-				});
-			t.start();
+			executor.execute(()-> {
+				log.debug("Running keep alive timeout wait");
+				try {
+					Thread.sleep(5000);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				//if the connection is timed out, it should be closed elsewhere
+				log.debug(userCon);
+				if(!userCon.isActive() && !userCon.isTimeOuted()){
+					log.debug("Disconnecting "+userCon+". Keep alive not consumed withing time period");
+					userConnections.remove(userCon);
+				}
+				else{
+					log.debug("Keep alive was consumed");
+				}
+			});
 		}
 	}
 	
@@ -91,14 +93,18 @@ public class MessageServiceImpl implements MessageService {
 	
 	@Override
 	public Message readMessage(String userId) {
+		log.trace("** -> Attempting to read a message");
 		UserConnection connection = null;
 		connection = userConnections.stream().filter((u)-> u.getUser().getUserId().equals(userId)).findFirst().orElse(null);
 		
-		if(connection == null)
+		if(connection == null){
+			log.trace("** <- Message read NULL");
 			return null;
+		}
 		
 		Message message = connection.readMessage();
 		log.debug("Consuming a message ["+message+"] by user ["+userId+"]");
+		log.trace("** <- Message read");
 		return message;
 	}
 
