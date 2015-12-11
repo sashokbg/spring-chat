@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import bg.alexander.chat.model.Message;
+import bg.alexander.chat.model.SystemMessage;
 import bg.alexander.chat.model.User;
 import bg.alexander.chat.model.UserConnection;
 
@@ -37,6 +38,18 @@ public class MessageServiceImpl implements MessageService {
 		userCon.setUser(user);
 		userConnections.add(userCon);
 		return true;
+	}
+	
+	@Override
+	@Async
+	public void broadcastUserConnection(User newUser){
+		Message connectedUserMessage = new SystemMessage<User>(SystemMessage.MessageType.USER_LOGIN, newUser);
+		userConnections.stream()
+			.filter(
+					(u)-> !u.getUser().equals(newUser))
+			.forEach(
+					(u) -> u.sendMessage(connectedUserMessage)
+			);
 	}
 	
 	@Override

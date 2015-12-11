@@ -19,7 +19,7 @@ $(document).ready(function(){
 });
 
 function append(message, userId){
-//	console.log(message);
+	console.log(message);
 	if(userId){
 		$('.messages#'+userId).append('<br />'+message);
 	}
@@ -47,6 +47,7 @@ function subscribe(){
 		getConnectedUsers();
 	});
 }
+
 function readMessages() {
 	$.ajax({
 		method : "POST",
@@ -55,10 +56,15 @@ function readMessages() {
 			user:$('#userName').val()
 		}
 	}).done(function(result) {
-//		console.log(result);
+		console.log(result);
 		//TODO bug null message printed
 		if(result){
-			append('<i>['+result.timeStamp+']: '+result.fromUser.userName+'</i>: '+result.message,result.fromUser.userId);
+			if(result.message == "USR_LOG"){
+				newUserConnected(result.payload);
+			}
+			else{
+				append('<i>['+result.timeStamp+']: '+result.fromUser.userName+'</i>: '+result.message,result.fromUser.userId);
+			}
 		}
 		readMessages();
 	});
@@ -91,6 +97,13 @@ function choseUser(userButton){
 	$('#'+id).addClass('active');
 }
 
+function newUserConnected(user){
+	var userName = user.userName;
+	var userId = user.userId;
+	$('#users').append('<br /><button class=\"user-button\" id=\"'+userId+'\" onclick=\"choseUser(this)\">'+userName+'</button>');
+	$('#container').prepend('<div class="messages user-messages" id=\"'+userId+'\">Messages:</div>');
+}
+
 function getConnectedUsers(){
 	$.ajax({
 		method : "GET",
@@ -100,10 +113,7 @@ function getConnectedUsers(){
 		$('.user-messages').remove();
 		$('.system-messages').addClass('active');
 		for(var i in result){
-			var userName = result[i].userName;
-			var userId = result[i].userId;
-			$('#users').append('<br /><button class=\"user-button\" id=\"'+userId+'\" onclick=\"choseUser(this)\">'+userName+'</button>');
-			$('#container').prepend('<div class="messages user-messages" id=\"'+userId+'\">Messages:</div>');
+			newUserConnected(result[i]);
 		}
 	});
 }

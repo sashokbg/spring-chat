@@ -96,6 +96,7 @@ public class MessageController {
 			log.error("Subscribing failed - Cannot convert user name");
 			return "KO";
 		}
+		
 		String userId = request.getSession().getId();
 		user.setUserId(userId);
 		log.info("Subscribing user "+user.getUserName()+" with id "+userId);
@@ -104,9 +105,13 @@ public class MessageController {
 		if(!result){
 			log.error("Subscribing failed - User exists");
 			set403();
+			return "KO";
 		}
-		
-		return result ? "OK" : "KO";
+		else{
+			messageService.broadcastUserConnection(user);
+			
+			return "OK";
+		}
 	}
 
 	@RequestMapping("read-messages")
