@@ -20,12 +20,19 @@ $(document).ready(function(){
 
 function append(message, userId){
 	console.log(message);
+	var conversation;
 	if(userId){
-		$('.messages#'+userId).append('<br />'+message);
+		conversation = $('.messages#'+userId);
 	}
 	else{
-		$('.messages.active').append('<br />'+message);
+		conversation = $('.messages.system-messages');
 	}
+	
+	conversation.append('<br />'+message);
+	if(!conversation.hasClass('active')){
+		$('#'+userId+'.user-button').addClass('flash');
+	}
+	
 	var messagesDiv = $('.active');
 	$('.messages.active').scrollTop(messagesDiv.prop("scrollHeight"));
 }
@@ -60,7 +67,7 @@ function readMessages() {
 		//TODO bug null message printed
 		if(result){
 			if(result.message == "USR_LOG"){
-				newUserConnected(result.payload);
+				addConnectedUser(result.payload);
 			}
 			else{
 				append('<i>['+result.timeStamp+']: '+result.fromUser.userName+'</i>: '+result.message,result.fromUser.userId);
@@ -95,9 +102,10 @@ function choseUser(userButton){
 	$('.system-messages').removeClass('active');
 	var id = $(userButton).attr('id');
 	$('#'+id).addClass('active');
+	$('#'+id+'.user-button').removeClass('flash');
 }
 
-function newUserConnected(user){
+function addConnectedUser(user){
 	var userName = user.userName;
 	var userId = user.userId;
 	$('#users').append('<br /><button class=\"user-button\" id=\"'+userId+'\" onclick=\"choseUser(this)\">'+userName+'</button>');
@@ -113,7 +121,7 @@ function getConnectedUsers(){
 		$('.user-messages').remove();
 		$('.system-messages').addClass('active');
 		for(var i in result){
-			newUserConnected(result[i]);
+			addConnectedUser(result[i]);
 		}
 	});
 }
