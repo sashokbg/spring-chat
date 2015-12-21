@@ -5,8 +5,7 @@
 	- Stream API
 	- Joda Time
 	- ArrayBlockingQueue
-	- CompletableFuture
-	- ForkJoinPool
+	- ThreadPoolExecutor
 - Servlet 3
 	- Async Enabled
 	- No web.xml
@@ -16,15 +15,13 @@
 	- Async support
 	- Validation
 	- Formatting
+	- JSON Serializer
 	- locale resolver
 	- message source
-	- ressource handler
+	- resource handler
 	- DeferredResult
 - Thymeleaf
 	- i18n
 	- templates
 
 
-TODO
-
-- Fix last keepalive "no such element exception"
