@@ -1,4 +1,11 @@
-# company-web
+# Asynchronous message board with Spring 4 and Servlet 3 - Long polling technique
+
+Allows multiple users to connect a chat room and exchange instant messages, using long polling.
+Manages timeouts for unactive users and automatically disconnects them.
+
+A request is sent to the server only if a new message is available for the user or if a timeout has occured
+
+Technologies
 
 - Java 8
 	- Functional programming
@@ -20,8 +27,5 @@
 	- message source
 	- resource handler
 	- DeferredResult
-- Thymeleaf
-	- i18n
-	- templates
 
 
